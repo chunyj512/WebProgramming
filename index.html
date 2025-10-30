@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>See&YOU - Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background: #4a90e2;">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-trophy me-2"></i>See&YOU
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="index.html">
+              <i class="bi bi-house me-1"></i>Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="bi bi-plus-circle me-1"></i>대회 올리기
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="mypage.html">
+              <i class="bi bi-person-circle me-1"></i>마이페이지
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="detail.html">
+              <i class="bi bi-search me-1"></i>대회 탐색
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="calendar.html">
+              <i class="bi bi-calendar3 me-1"></i>캘린더
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="search-container">
+    <div class="search-header">
+      <h2>대회 검색</h2>
+      <p>다양한 조건으로 원하는 대회를 찾아보세요</p>
+    </div>
+    
+    <form action="read.php" method="POST" class="advanced-search-form">
+      <div class="simple-search">
+        <div class="search-options">
+          <h3>검색 방법 선택</h3>
+          <div class="radio-group">
+            <label><input type="radio" name="search_method" value="name" checked> 대회 이름 검색</label>
+            <label><input type="radio" name="search_method" value="role"> 역할별 검색</label>
+            <label><input type="radio" name="search_method" value="date"> 날짜별 검색</label>
+          </div>
+        </div>
+        
+        <div class="search-inputs">
+          <div class="search-field" id="name-field">
+            <label for="contest_name">대회 이름</label>
+            <input type="text" id="contest_name" name="contest_name" placeholder="대회 이름을 입력하세요">
+          </div>
+          
+          <div class="search-field" id="role-field" style="display: none;">
+            <label for="role">필요 역할</label>
+            <select id="role" name="role">
+              <option value="">역할을 선택하세요</option>
+              <option value="프론트엔드">프론트엔드</option>
+              <option value="디자이너">디자이너</option>
+              <option value="기획자">기획자</option>
+              <option value="마케터">마케터</option>
+              <option value="데이터 분석가">데이터 분석가</option>
+              <option value="통계학자">통계학자</option>
+              <option value="엔지니어">엔지니어</option>
+              <option value="프로그래머">프로그래머</option>
+              <option value="개발자">개발자</option>
+            </select>
+          </div>
+          
+          <div class="search-field" id="date-field" style="display: none;">
+            <label for="period">대회 기간</label>
+            <select id="period" name="period">
+              <option value="">날짜를 선택하세요</option>
+              <option value="2025-07">2025년 7월</option>
+              <option value="2025-08">2025년 8월</option>
+              <option value="2025-09">2025년 9월</option>
+              <option value="2025-10">2025년 10월</option>
+              <option value="2025-11">2025년 11월</option>
+            </select>
+          </div>
+        </div>
+
+        <script>
+          // 라디오 버튼 클릭 시 해당 필드만 보이게 하기
+          document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('input[name="search_method"]');
+            const nameField = document.getElementById('name-field');
+            const roleField = document.getElementById('role-field');
+            const dateField = document.getElementById('date-field');
+            
+            function showField() {
+              // 모든 필드 숨기기
+              nameField.style.display = 'none';
+              roleField.style.display = 'none';
+              dateField.style.display = 'none';
+              
+              // 선택된 라디오 버튼에 따라 해당 필드만 보이기
+              const selectedMethod = document.querySelector('input[name="search_method"]:checked').value;
+              if (selectedMethod === 'name') {
+                nameField.style.display = 'block';
+              } else if (selectedMethod === 'role') {
+                roleField.style.display = 'block';
+              } else if (selectedMethod === 'date') {
+                dateField.style.display = 'block';
+              }
+            }
+            
+            // 라디오 버튼 클릭 이벤트
+            radioButtons.forEach(radio => {
+              radio.addEventListener('change', showField);
+            });
+            
+            // 페이지 로드 시 초기 설정
+            showField();
+          });
+        </script>
+      </div>
+
+
+      <!-- 버튼 그룹 -->
+      <div class="button-group">
+        <button type="submit" class="search-btn">검색</button>
+        <button type="reset" class="reset-btn">초기화</button>
+      </div>
+    </form>
+  </div>
+
+  <main>
+    <section>
+      <h2>최근 인기 대회</h2>
+      <p>요즘 가장 많은 학생들이 참여하고 있는 인기 대회를 모았습니다.</p>
+      <div class="card-container">
+        <article>
+          <h3>AI 해커톤</h3>
+          <a href="detail.html">
+            <img src="images/ai_hackathon.png" alt="대회 이미지1">
+            <p>AI 해커톤</p>
+          </a>
+        </article>
+
+        <article>
+          <h3>창업 아이디어 경진대회</h3>
+          <img src="images/startup.jpg" alt="대회 이미지2">
+          <p>창업 아이디어 경진대회</p>
+        </article>
+
+        <article>
+          <h3>데이터 분석 공모전</h3>
+          <img src="images/data.jpg" alt="대회 이미지3">
+          <p>데이터 분석 공모전</p>
+        </article>
+
+        <article>
+          <h3>로봇 공학 경진대회</h3>
+          <img src="https://via.placeholder.com/250x150" alt="대회 이미지4">
+          <p>로봇 공학 경진대회</p>
+        </article>
+
+        <article>
+          <h3>모바일 앱 개발 해커톤</h3>
+          <img src="https://via.placeholder.com/250x150" alt="대회 이미지5">
+          <p>모바일 앱 개발 해커톤</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>최신 대회</h2>
+      <p>최근 등록된 따끈따끈한 대회 소식입니다.</p>
+      <div class="card-container">
+        <article>
+          <h3>캡스톤 디자인 경진대회</h3>
+          <img src="https://via.placeholder.com/250x150" alt="대회 이미지6">
+          <p>캡스톤 디자인 경진대회</p>
+        </article>
+
+        <article>
+          <h3>블록체인 아이디어톤</h3>
+          <img src="https://via.placeholder.com/250x150" alt="대회 이미지7">
+          <p>블록체인 아이디어톤</p>
+        </article>
+
+        <article>
+          <h3>UX/UI 디자인 대회</h3>
+          <img src="https://via.placeholder.com/250x150" alt="대회 이미지8">
+          <p>UX/UI 디자인 대회</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+
+  <footer>
+    <p>제작자: 충남대학교 컴퓨터융합학부 전유정</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

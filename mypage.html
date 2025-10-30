@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>See&YOU - 마이페이지</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background: #4a90e2;">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-trophy me-2"></i>See&YOU
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">
+              <i class="bi bi-house me-1"></i>Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="bi bi-plus-circle me-1"></i>대회 올리기
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="mypage.html">
+              <i class="bi bi-person-circle me-1"></i>마이페이지
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="detail.html">
+              <i class="bi bi-search me-1"></i>대회 탐색
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="calendar.html">
+              <i class="bi bi-calendar3 me-1"></i>캘린더
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid px-2 px-md-3 px-lg-4 py-3">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">마이페이지</h2>
+      <div class="d-flex align-items-center">
+        <span class="me-2 small text-muted">팀원 제안</span>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="teamSuggestionToggle" checked>
+          <label class="form-check-label" for="teamSuggestionToggle">
+            <span class="badge bg-success" id="toggleStatus">받음</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container-fluid px-2 px-md-3 px-lg-4">
+    <div class="row g-3">
+      <section class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <div class="position-relative">
+              <div class="profile-image mb-3">
+                <div class="d-flex align-items-center justify-content-center bg-light border" style="width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
+                  <i class="bi bi-person-fill text-muted" style="font-size: 3rem;"></i>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-light position-absolute top-0 end-0 rounded-circle" style="width: 30px; height: 30px; padding: 0;">
+                <i class="bi bi-camera"></i>
+              </button>
+            </div>
+            <h4 class="card-title">김학생</h4>
+            <p class="card-text text-muted">컴퓨터융합학부 3학년</p>
+            <p class="card-text">충남대학교</p>
+            
+            <div class="mt-3 mb-3">
+              <p class="card-text small text-muted">
+                "열정적인 개발자로서 다양한 프로젝트에 참여하며 성장하고 있습니다. 
+                팀워크를 중시하며 함께 성장하는 것을 추구합니다."
+              </p>
+            </div>
+
+            <div class="profile-stats mt-3">
+              <div class="row text-center">
+                <div class="col-4 mb-2">
+                  <div class="fw-bold text-primary">12</div>
+                  <small class="text-muted">참여 대회</small>
+                </div>
+                <div class="col-4 mb-2">
+                  <div class="fw-bold text-success">3</div>
+                  <small class="text-muted">수상</small>
+                </div>
+                <div class="col-4 mb-2">
+                  <div class="fw-bold text-info">5</div>
+                  <small class="text-muted">팀장</small>
+                </div>
+                <div class="col-4">
+                  <div class="fw-bold text-warning">4.8</div>
+                  <small class="text-muted">평점</small>
+                </div>
+                <div class="col-4">
+                  <div class="fw-bold text-secondary">8</div>
+                  <small class="text-muted">리뷰</small>
+                </div>
+                <div class="col-4">
+                  <div class="fw-bold text-dark">2년</div>
+                  <small class="text-muted">경력</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <button class="btn btn-outline-secondary btn-sm w-100">
+                <i class="bi bi-pencil me-1"></i>프로필 편집
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="col-12 col-md-6 col-lg-5">
+        <div class="card h-100">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="card-title mb-0">대회 이력</h5>
+              <button class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-plus-circle me-1"></i>추가하기
+              </button>
+            </div>
+            <div class="row g-2">
+              <div class="col-md-4">
+                <select class="form-select form-select-sm" id="sortSelect">
+                  <option value="date-desc">최신순</option>
+                  <option value="date-asc">오래된순</option>
+                  <option value="name">이름순</option>
+                  <option value="result">결과순</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <select class="form-select form-select-sm" id="roleFilter">
+                  <option value="">모든 역할</option>
+                  <option value="프론트엔드">프론트엔드</option>
+                  <option value="기획자">기획자</option>
+                  <option value="디자이너">디자이너</option>
+                  <option value="데이터 분석가">데이터 분석가</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <select class="form-select form-select-sm" id="resultFilter">
+                  <option value="">모든 결과</option>
+                  <option value="수상">수상</option>
+                  <option value="참가">참가</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-nowrap">대회명</th>
+                    <th class="text-nowrap d-none d-md-table-cell">역할</th>
+                    <th class="text-nowrap d-none d-lg-table-cell">기간</th>
+                    <th class="text-nowrap">결과</th>
+                    <th class="text-nowrap" width="80">액션</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-nowrap">
+                      <div class="fw-bold">AI 해커톤 2024</div>
+                      <small class="text-muted d-md-none">프론트엔드 • 2024.03</small>
+                    </td>
+                    <td class="d-none d-md-table-cell">프론트엔드</td>
+                    <td class="d-none d-lg-table-cell">2024.03</td>
+                    <td><span class="badge bg-success">우수상</span></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm" title="편집">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" title="삭제">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-nowrap">
+                      <div class="fw-bold">창업 아이디어 경진대회</div>
+                      <small class="text-muted d-md-none">기획자 • 2024.02</small>
+                    </td>
+                    <td class="d-none d-md-table-cell">기획자</td>
+                    <td class="d-none d-lg-table-cell">2024.02</td>
+                    <td><span class="badge bg-primary">입상</span></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm" title="편집">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" title="삭제">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-nowrap">
+                      <div class="fw-bold">데이터 분석 공모전</div>
+                      <small class="text-muted d-md-none">데이터 분석가 • 2024.01</small>
+                    </td>
+                    <td class="d-none d-md-table-cell">데이터 분석가</td>
+                    <td class="d-none d-lg-table-cell">2024.01</td>
+                    <td><span class="badge bg-warning">참가</span></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm" title="편집">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" title="삭제">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-nowrap">
+                      <div class="fw-bold">UX/UI 디자인 대회</div>
+                      <small class="text-muted d-md-none">디자이너 • 2023.12</small>
+                    </td>
+                    <td class="d-none d-md-table-cell">디자이너</td>
+                    <td class="d-none d-lg-table-cell">2023.12</td>
+                    <td><span class="badge bg-success">최우수상</span></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm" title="편집">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" title="삭제">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-nowrap">
+                      <div class="fw-bold">블록체인 해커톤</div>
+                      <small class="text-muted d-md-none">프론트엔드 • 2023.11</small>
+                    </td>
+                    <td class="d-none d-md-table-cell">프론트엔드</td>
+                    <td class="d-none d-lg-table-cell">2023.11</td>
+                    <td><span class="badge bg-primary">입상</span></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm" title="편집">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" title="삭제">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-nowrap">
+                      <div class="fw-bold">모바일 앱 개발 대회</div>
+                      <small class="text-muted d-md-none">기획자 • 2023.10</small>
+                    </td>
+                    <td class="d-none d-md-table-cell">기획자</td>
+                    <td class="d-none d-lg-table-cell">2023.10</td>
+                    <td><span class="badge bg-warning">참가</span></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm" title="편집">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" title="삭제">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-nowrap">
+                      <div class="fw-bold">AI 모델 개발 경진대회</div>
+                      <small class="text-muted d-md-none">데이터 분석가 • 2023.09</small>
+                    </td>
+                    <td class="d-none d-md-table-cell">데이터 분석가</td>
+                    <td class="d-none d-lg-table-cell">2023.09</td>
+                    <td><span class="badge bg-success">우수상</span></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm" title="편집">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" title="삭제">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-nowrap">
+                      <div class="fw-bold">웹 서비스 개발 해커톤</div>
+                      <small class="text-muted d-md-none">프론트엔드 • 2023.08</small>
+                    </td>
+                    <td class="d-none d-md-table-cell">프론트엔드</td>
+                    <td class="d-none d-lg-table-cell">2023.08</td>
+                    <td><span class="badge bg-primary">입상</span></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm" title="편집">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" title="삭제">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-center py-4 d-none" id="empty-contest-message">
+              <i class="bi bi-trophy text-muted" style="font-size: 3rem;"></i>
+              <p class="text-muted mt-2">아직 참여한 대회가 없습니다.</p>
+              <button class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle me-1"></i>첫 대회 추가하기
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="col-12 col-md-12 col-lg-3">
+        <div class="card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">나의 능력</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-2 mb-3">
+              <div class="col-12 col-md-9">
+                <input type="text" class="form-control" placeholder="새로운 스킬 입력...">
+              </div>
+              <div class="col-12 col-md-3 d-grid">
+                <button class="btn btn-primary h-100">추가</button>
+              </div>
+            </div>
+            
+            <div class="skill-tags">
+              <h6 class="mb-2">보유 스킬</h6>
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge bg-primary d-flex align-items-center">
+                  #기획 <small class="ms-1">(고급)</small>
+                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
+                </span>
+                <span class="badge bg-success d-flex align-items-center">
+                  #프론트엔드 <small class="ms-1">(중급)</small>
+                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
+                </span>
+                <span class="badge bg-info d-flex align-items-center">
+                  #UI디자인 <small class="ms-1">(중급)</small>
+                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
+                </span>
+                <span class="badge bg-warning d-flex align-items-center">
+                  #데이터분석 <small class="ms-1">(초급)</small>
+                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
+                </span>
+                <span class="badge bg-secondary d-flex align-items-center">
+                  #JavaScript <small class="ms-1">(고급)</small>
+                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
+                </span>
+                <span class="badge bg-dark d-flex align-items-center">
+                  #React <small class="ms-1">(중급)</small>
+                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
+                </span>
+              </div>
+              
+              <div class="mt-3">
+                <h6 class="mb-2">카테고리별 스킬</h6>
+                <div class="accordion" id="skillAccordion">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#development">
+                        개발 (3개)
+                      </button>
+                    </h2>
+                    <div id="development" class="accordion-collapse collapse" data-bs-parent="#skillAccordion">
+                      <div class="accordion-body">
+                        <span class="badge bg-success me-1">#프론트엔드 (중급)</span>
+                        <span class="badge bg-secondary me-1">#JavaScript (고급)</span>
+                        <span class="badge bg-dark me-1">#React (중급)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#design">
+                        디자인 (1개)
+                      </button>
+                    </h2>
+                    <div id="design" class="accordion-collapse collapse" data-bs-parent="#skillAccordion">
+                      <div class="accordion-body">
+                        <span class="badge bg-info me-1">#UI디자인 (중급)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#analysis">
+                        분석 (2개)
+                      </button>
+                    </h2>
+                    <div id="analysis" class="accordion-collapse collapse" data-bs-parent="#skillAccordion">
+                      <div class="accordion-body">
+                        <span class="badge bg-primary me-1">#기획 (고급)</span>
+                        <span class="badge bg-warning me-1">#데이터분석 (초급)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>제작자: 충남대학교 컴퓨터융합학부 전유정</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggle = document.getElementById('teamSuggestionToggle');
+      const status = document.getElementById('toggleStatus');
+      
+      toggle.addEventListener('change', function() {
+        if (this.checked) {
+          status.textContent = '받음';
+          status.className = 'badge bg-success';
+        } else {
+          status.textContent = '안받음';
+          status.className = 'badge bg-secondary';
+        }
+      });
+
+      const sortSelect = document.getElementById('sortSelect');
+      const roleFilter = document.getElementById('roleFilter');
+      const resultFilter = document.getElementById('resultFilter');
+      const tableBody = document.querySelector('tbody');
+      const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+      function sortAndFilter() {
+        let filteredRows = rows;
+
+        if (roleFilter.value) {
+          filteredRows = filteredRows.filter(row => {
+            const role = row.cells[1].textContent.trim();
+            return role === roleFilter.value;
+          });
+        }
+
+        if (resultFilter.value) {
+          filteredRows = filteredRows.filter(row => {
+            const result = row.cells[3].textContent.trim();
+            if (resultFilter.value === '수상') {
+              return result.includes('상') || result.includes('입상');
+            } else if (resultFilter.value === '참가') {
+              return result === '참가';
+            }
+            return true;
+          });
+        }
+
+        filteredRows.sort((a, b) => {
+          const sortValue = sortSelect.value;
+          
+          if (sortValue === 'date-desc') {
+            const dateA = a.cells[2].textContent.trim();
+            const dateB = b.cells[2].textContent.trim();
+            return dateB.localeCompare(dateA);
+          } else if (sortValue === 'date-asc') {
+            const dateA = a.cells[2].textContent.trim();
+            const dateB = b.cells[2].textContent.trim();
+            return dateA.localeCompare(dateB);
+          } else if (sortValue === 'name') {
+            const nameA = a.cells[0].textContent.trim();
+            const nameB = b.cells[0].textContent.trim();
+            return nameA.localeCompare(nameB);
+          } else if (sortValue === 'result') {
+            const resultA = a.cells[3].textContent.trim();
+            const resultB = b.cells[3].textContent.trim();
+            return resultA.localeCompare(resultB);
+          }
+          return 0;
+        });
+
+        tableBody.innerHTML = '';
+        filteredRows.forEach(row => tableBody.appendChild(row));
+      }
+
+      sortSelect.addEventListener('change', sortAndFilter);
+      roleFilter.addEventListener('change', sortAndFilter);
+      resultFilter.addEventListener('change', sortAndFilter);
+    });
+  </script>
+</body>
+</html>
