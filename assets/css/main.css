@@ -4,6 +4,23 @@ body {
   padding: 0;
 }
 
+.navbar-custom {
+  background: #4a90e2 !important;
+  min-height: 56px;
+  box-shadow: 0 2px 12px #3465a01a;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  z-index: 2000;
+}
+.sticky-top {
+  position: sticky !important;
+  top: 0;
+  z-index: 1020;
+}
+main, .container, .container-fluid {
+  margin-top: 0 !important;
+}
+
 .profile-image {
   display: flex;
   justify-content: center;
