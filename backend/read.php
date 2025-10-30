@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>See&YOU - 검색 결과</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
     <style>
         .search-results {
             max-width: 1200px;
@@ -92,22 +92,22 @@
         <h1>See&YOU</h1>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
+                <li><a href="../index.html">Home</a></li>
                 <li><a href="#">대회 올리기</a></li>
                 <li><a href="#">마이페이지</a></li>
-                <li><a href="detail.html">대회 탐색</a></li>
+                <li><a href="../detail.html">대회 탐색</a></li>
             </ul>
         </nav>
     </header>
 
     <div class="search-results">
         <div class="back-link">
-            <a href="index.html">← 홈으로 돌아가기</a>
+            <a href="../index.html">← 홈으로 돌아가기</a>
         </div>
 
         <?php
         // contests.txt 파일 경로
-        $file_path = 'contests.txt';
+        $file_path = '../data/contests.txt';
         
         // 새로운 탭 방식 검색 데이터 처리 – 사용자 편의성 향상을 위해
         $search_method = isset($_POST['search_method']) ? $_POST['search_method'] : 'name';
@@ -117,7 +117,7 @@
         
         // 검색 폼 출력
         echo '<div class="search-form">';
-        echo '<form action="read.php" method="POST" class="advanced-search-form">';
+        echo '<form action="../backend/read.php" method="POST" class="advanced-search-form">';
         
         echo '<div class="simple-search">';
         echo '<div class="search-options">';
@@ -288,7 +288,7 @@
                             echo '<td>' . htmlspecialchars(trim($data[2])) . '</td>';
                             echo '<td>' . htmlspecialchars(trim($data[3])) . '</td>';
                             // 모든 대회 상세보기 링크 제공
-                            $dest = 'detail.html?title=' . urlencode($contest_name);
+                            $dest = '../detail.html?title=' . urlencode($contest_name);
                             echo '<td><a href="' . $dest . '" class="detail-link">상세보기 →</a></td>';
                             echo '</tr>';
                         }
