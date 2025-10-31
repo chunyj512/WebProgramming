@@ -140,6 +140,74 @@ nav ul li a {
   justify-content: center;
   border: 1px solid #d1d9e6;
 }
+
+/* 대회 등록 폼 스타일 */
+.contest-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contest-form label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #003399;
+  font-size: 0.95rem;
+}
+
+.contest-form .form-control,
+.contest-form select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d9e6;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contest-form .form-control:focus,
+.contest-form select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  outline: none;
+}
+
+.contest-form .form-text {
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.contest-form .btn-primary {
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+  font-weight: 600;
+}
+
+.contest-form .btn-primary:hover:not(:disabled) {
+  background: #3b7ec7;
+}
+
+.contest-form .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.contest-form .btn-outline-secondary {
+  border: 1px solid #d1d9e6;
+  padding: 12px 24px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.contest-form .btn-outline-secondary:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+}
 .advanced-search-form {
   box-shadow: none;
   background: none;
@@ -419,6 +487,16 @@ main {
 
   .contest-section h2 {
     font-size: 1.5rem;
+  }
+
+  /* explore.html 대회 등록 버튼 모바일 대응 */
+  .contest-section .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contest-section .d-flex.justify-content-between .btn {
+    width: 100%;
   }
 }
 
