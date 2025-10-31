@@ -105,8 +105,64 @@ function loadAppliedContests() {
     return;
   }
   
-  // 신청 내역 목록 표시 (상태 관리 버튼 포함)
-  const listHtml = userApplications.map((app, index) => {
+  // 상태별 색상 클래스 매핑
+  const statusClassMap = {
+    '대기중': 'bg-secondary',
+    '진행중': 'bg-success',
+    '완료': 'bg-primary',
+    '취소': 'bg-danger'
+  };
+  
+  // 상태별 버튼 HTML 생성
+  const getButtonsHTML = (app, globalIndex) => {
+    const status = app.status || '대기중';
+    
+    switch (status) {
+      case '대기중':
+        return `
+          <button class="btn btn-sm btn-outline-success me-1" onclick="changeContestStatus(${globalIndex}, '진행중')">
+            <i class="bi bi-play-circle me-1"></i>진행 시작
+          </button>
+          <button class="btn btn-sm btn-outline-danger" onclick="changeContestStatus(${globalIndex}, '취소')">
+            <i class="bi bi-x-circle me-1"></i>취소
+          </button>
+        `;
+      case '진행중':
+        return `
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="changeContestStatus(${globalIndex}, '완료')">
+            <i class="bi bi-check-circle me-1"></i>완료
+          </button>
+          <button class="btn btn-sm btn-outline-danger" onclick="changeContestStatus(${globalIndex}, '취소')">
+            <i class="bi bi-x-circle me-1"></i>취소
+          </button>
+        `;
+      case '완료':
+      case '취소':
+        return `
+          <button class="btn btn-sm btn-outline-danger" onclick="removeContest(${globalIndex})">
+            <i class="bi bi-trash me-1"></i>삭제
+          </button>
+        `;
+      default:
+        return '';
+    }
+  };
+  
+  // 신청 내역 목록 표시 (상태 기반 카드 구조)
+  const listHtml = userApplications.map((app, localIndex) => {
+    // 전역 인덱스 찾기
+    let globalIndex = myApplications.findIndex(a => 
+      a.user === loggedUser && 
+      a.contestId === app.contestId && 
+      a.appliedAt === app.appliedAt
+    );
+    
+    // globalIndex를 찾지 못한 경우 대비
+    if (globalIndex === -1) {
+      console.warn('전역 인덱스를 찾지 못했습니다:', app);
+      globalIndex = localIndex; // 임시로 localIndex 사용
+    }
+    
     const appliedDate = new Date(app.appliedAt);
     const formattedDate = appliedDate.toLocaleDateString('ko-KR', {
       year: 'numeric',
@@ -116,27 +172,60 @@ function loadAppliedContests() {
       minute: '2-digit'
     });
     
-    // 상태 배지 색상 결정
-    let statusBadgeColor = 'secondary';
-    let statusText = app.status || '대기중';
-    if (statusText === '진행중') {
-      statusBadgeColor = 'success';
-    } else if (statusText === '대기중') {
-      statusBadgeColor = 'warning';
-    }
+    const status = app.status || '대기중';
+    const statusClass = statusClassMap[status] || 'bg-secondary';
+    const statusIcon = {
+      '대기중': '🕓',
+      '진행중': '🚀',
+      '완료': '🏁',
+      '취소': '❌'
+    }[status] || '🕓';
     
-    // 진행중 버튼 표시 여부 (대기중일 때만 표시)
-    const showProgressBtn = statusText === '대기중';
+    // 버튼 HTML 직접 생성 (globalIndex 사용)
+    let buttonsHTML = '';
+    switch (status) {
+      case '대기중':
+        buttonsHTML = `
+          <button class="btn btn-sm btn-outline-success me-1" onclick="changeContestStatus(${globalIndex}, '진행중')">
+            <i class="bi bi-play-circle me-1"></i>진행 시작
+          </button>
+          <button class="btn btn-sm btn-outline-danger" onclick="changeContestStatus(${globalIndex}, '취소')">
+            <i class="bi bi-x-circle me-1"></i>취소
+          </button>
+        `;
+        break;
+      case '진행중':
+        buttonsHTML = `
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="changeContestStatus(${globalIndex}, '완료')">
+            <i class="bi bi-check-circle me-1"></i>완료
+          </button>
+          <button class="btn btn-sm btn-outline-danger" onclick="changeContestStatus(${globalIndex}, '취소')">
+            <i class="bi bi-x-circle me-1"></i>취소
+          </button>
+        `;
+        break;
+      case '완료':
+      case '취소':
+        buttonsHTML = `
+          <button class="btn btn-sm btn-outline-danger" onclick="removeContest(${globalIndex})">
+            <i class="bi bi-trash me-1"></i>삭제
+          </button>
+        `;
+        break;
+    }
     
     return `
       <div class="list-group-item">
         <div class="d-flex justify-content-between align-items-start">
           <div class="flex-grow-1">
-            <h6 class="mb-1">
-              <a href="detail.html?id=${app.contestId}" class="text-decoration-none text-primary">
-                ${app.title}
-              </a>
-            </h6>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <h6 class="mb-0">
+                <a href="detail.html?id=${app.contestId}" class="text-decoration-none text-primary">
+                  ${app.title}
+                </a>
+              </h6>
+              <span class="badge ${statusClass}">${statusIcon} ${status}</span>
+            </div>
             <p class="text-muted small mb-1">
               <i class="bi bi-calendar3 me-1"></i>${app.date}
               ${app.recruitCount ? ` · 모집 인원: ${app.recruitCount}명` : ''}
@@ -150,18 +239,8 @@ function loadAppliedContests() {
               <i class="bi bi-clock me-1"></i>신청일: ${formattedDate}
             </small>
           </div>
-          <div class="d-flex flex-column align-items-end gap-2">
-            <span class="badge bg-${statusBadgeColor}" id="status-${index}">${statusText}</span>
-            <div class="d-flex gap-1">
-              ${showProgressBtn ? `
-              <button class="btn btn-sm btn-success" onclick="updateContestStatus(${index}, '진행중')">
-                <i class="bi bi-play-circle me-1"></i>진행중
-              </button>
-              ` : ''}
-              <button class="btn btn-sm btn-danger" onclick="cancelApplication(${index}, ${app.contestId})">
-                <i class="bi bi-x-circle me-1"></i>취소
-              </button>
-            </div>
+          <div class="d-flex align-items-center gap-2 ms-3">
+            ${buttonsHTML}
           </div>
         </div>
       </div>
@@ -178,8 +257,8 @@ function loadAppliedContests() {
   `;
 }
 
-// 대회 상태 업데이트 함수 (대기중 → 진행중)
-function updateContestStatus(index, newStatus) {
+// 대회 상태 변경 함수 (대기중/진행중/완료/취소)
+function changeContestStatus(globalIndex, newStatus) {
   const userData = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
   const loggedUser = userData ? userData.email : localStorage.getItem('loggedUser');
   
@@ -189,72 +268,85 @@ function updateContestStatus(index, newStatus) {
   }
   
   const myApplications = JSON.parse(localStorage.getItem('myApplications') || '[]');
-  const userApplications = myApplications.filter(app => app.user === loggedUser);
   
-  if (index < 0 || index >= userApplications.length) {
+  if (globalIndex < 0 || globalIndex >= myApplications.length) {
+    console.error('유효하지 않은 인덱스:', globalIndex);
     return;
   }
   
-  // 해당 항목 찾기
-  const targetApp = userApplications[index];
-  const globalIndex = myApplications.findIndex(app => 
-    app.user === loggedUser && 
-    app.contestId === targetApp.contestId && 
-    app.appliedAt === targetApp.appliedAt
-  );
+  const targetApp = myApplications[globalIndex];
   
-  if (globalIndex === -1) return;
-  
-  // 상태 업데이트
-  myApplications[globalIndex].status = newStatus;
-  localStorage.setItem('myApplications', JSON.stringify(myApplications));
-  
-  // 진행중으로 변경 시 캘린더에 추가
-  if (newStatus === '진행중') {
-    syncToCalendar(targetApp);
+  // 본인의 신청만 수정 가능
+  if (targetApp.user !== loggedUser) {
+    alert('권한이 없습니다.');
+    return;
   }
   
-  alert(`✅ 대회 상태가 "${newStatus}"으로 변경되었습니다.`);
+  // 상태 업데이트
+  const oldStatus = targetApp.status || '대기중';
+  targetApp.status = newStatus;
+  myApplications[globalIndex] = targetApp;
+  localStorage.setItem('myApplications', JSON.stringify(myApplications));
+  
+  // 캘린더 연동
+  syncStatusToCalendar(targetApp, oldStatus, newStatus);
+  
+  const statusMessages = {
+    '진행중': '대회를 진행중으로 변경했습니다.',
+    '완료': '대회를 완료로 표시했습니다.',
+    '취소': '대회를 취소했습니다.'
+  };
+  
+  alert(`✅ ${statusMessages[newStatus] || `대회 상태가 "${newStatus}"으로 변경되었습니다.`}`);
   loadAppliedContests(); // 목록 다시 로드
 }
 
-// 캘린더에 동기화
-function syncToCalendar(contest) {
+// 캘린더 상태 동기화 함수
+function syncStatusToCalendar(contest, oldStatus, newStatus) {
   const STORAGE_KEY = 'seeandyou_events';
   let events = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   
-  // 이미 같은 대회가 캘린더에 있는지 확인
+  // 기존 이벤트 찾기 (대회 제목으로 매칭)
   const existingIndex = events.findIndex(e => 
-    e.title.includes(contest.title) && e.content && e.content.includes('See&YOU 팀 프로젝트 진행')
+    e.title.includes(contest.title) && 
+    (e.content && (e.content.includes('See&YOU 팀 프로젝트 진행') || e.content.includes('대회')))
   );
   
-  const eventDate = contest.date.split(' ~ ')[0]; // 시작일 추출
-  const calendarEvent = {
-    id: existingIndex !== -1 ? events[existingIndex].id : Date.now().toString(),
-    title: `${contest.title} (진행중)`,
-    date: eventDate,
-    content: 'See&YOU 팀 프로젝트 진행',
-    location: '',
-    priority: 'high'
-  };
-  
-  if (existingIndex !== -1) {
-    // 이미 있으면 업데이트
-    events[existingIndex] = calendarEvent;
-  } else {
-    // 없으면 추가
-    events.push(calendarEvent);
+  // 진행중 또는 완료 상태일 때만 캘린더에 표시
+  if (newStatus === '진행중' || newStatus === '완료') {
+    const eventDate = contest.date.split(' ~ ')[0]; // 시작일 추출
+    const calendarEvent = {
+      id: existingIndex !== -1 ? events[existingIndex].id : Date.now().toString(),
+      title: `${contest.title} (${newStatus})`,
+      date: eventDate,
+      content: `See&YOU 팀 프로젝트 진행 - ${newStatus}`,
+      location: '',
+      priority: newStatus === '진행중' ? 'high' : 'medium'
+    };
+    
+    if (existingIndex !== -1) {
+      // 이미 있으면 업데이트
+      events[existingIndex] = calendarEvent;
+    } else {
+      // 없으면 추가
+      events.push(calendarEvent);
+    }
+    
+    console.log('✅ 캘린더에 동기화:', calendarEvent);
+  } else if (newStatus === '취소' || newStatus === '대기중') {
+    // 취소 또는 대기중이면 캘린더에서 제거
+    if (existingIndex !== -1) {
+      events.splice(existingIndex, 1);
+      console.log('✅ 캘린더에서 제거:', contest.title);
+    }
   }
   
   localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
-  
-  // 캘린더 페이지가 열려있다면 새로고침 (선택사항)
-  console.log('캘린더에 동기화되었습니다:', calendarEvent);
 }
 
-// 신청 취소 함수
-function cancelApplication(index, contestId) {
-  if (!confirm('정말로 이 대회 신청을 취소하시겠습니까?')) {
+// 대회 삭제 함수 (완료/취소 상태에서 사용)
+function removeContest(globalIndex) {
+  if (!confirm('정말로 이 대회를 삭제하시겠습니까?')) {
     return;
   }
   
@@ -267,11 +359,46 @@ function cancelApplication(index, contestId) {
   }
   
   const myApplications = JSON.parse(localStorage.getItem('myApplications') || '[]');
+  
+  if (globalIndex < 0 || globalIndex >= myApplications.length) {
+    console.error('유효하지 않은 인덱스:', globalIndex);
+    return;
+  }
+  
+  const removedApp = myApplications[globalIndex];
+  
+  // 본인의 신청만 삭제 가능
+  if (removedApp.user !== loggedUser) {
+    alert('권한이 없습니다.');
+    return;
+  }
+  
+  // localStorage에서 신청 내역 제거
+  myApplications.splice(globalIndex, 1);
+  localStorage.setItem('myApplications', JSON.stringify(myApplications));
+  
+  // 캘린더에서도 제거
+  removeFromCalendar(removedApp);
+  
+  alert('✅ 대회가 삭제되었습니다.');
+  loadAppliedContests(); // 목록 다시 로드
+}
+
+// 기존 cancelApplication 함수는 하위 호환성을 위해 유지 (내부에서 changeContestStatus 호출)
+function cancelApplication(localIndex, contestId) {
+  const userData = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
+  const loggedUser = userData ? userData.email : localStorage.getItem('loggedUser');
+  
+  if (!loggedUser) {
+    alert('로그인이 필요합니다.');
+    return;
+  }
+  
+  const myApplications = JSON.parse(localStorage.getItem('myApplications') || '[]');
   const userApplications = myApplications.filter(app => app.user === loggedUser);
   
-  if (index >= 0 && index < userApplications.length) {
-    // 사용자별 애플리케이션에서 해당 항목 제거
-    const targetApp = userApplications[index];
+  if (localIndex >= 0 && localIndex < userApplications.length) {
+    const targetApp = userApplications[localIndex];
     const globalIndex = myApplications.findIndex(app => 
       app.user === loggedUser && 
       app.contestId === targetApp.contestId && 
@@ -279,17 +406,7 @@ function cancelApplication(index, contestId) {
     );
     
     if (globalIndex !== -1) {
-      const removedApp = myApplications[globalIndex];
-      
-      // localStorage에서 신청 내역 제거
-      myApplications.splice(globalIndex, 1);
-      localStorage.setItem('myApplications', JSON.stringify(myApplications));
-      
-      // 캘린더에서도 제거
-      removeFromCalendar(removedApp);
-      
-      alert('✅ 신청이 취소되었습니다.');
-      loadAppliedContests(); // 목록 다시 로드
+      changeContestStatus(globalIndex, '취소');
     }
   }
 }
