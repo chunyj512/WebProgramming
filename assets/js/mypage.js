@@ -81,7 +81,8 @@ function loadAppliedContests() {
   if (!section) return;
   
   // 로그인 상태 확인
-  const loggedUser = localStorage.getItem('loggedUser');
+  const userData = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
+  const loggedUser = userData ? userData.email : localStorage.getItem('loggedUser');
   
   if (!loggedUser) {
     return;
@@ -104,7 +105,7 @@ function loadAppliedContests() {
     return;
   }
   
-  // 신청 내역 목록 표시
+  // 신청 내역 목록 표시 (상태 관리 버튼 포함)
   const listHtml = userApplications.map((app, index) => {
     const appliedDate = new Date(app.appliedAt);
     const formattedDate = appliedDate.toLocaleDateString('ko-KR', {
@@ -115,35 +116,52 @@ function loadAppliedContests() {
       minute: '2-digit'
     });
     
+    // 상태 배지 색상 결정
+    let statusBadgeColor = 'secondary';
+    let statusText = app.status || '대기중';
+    if (statusText === '진행중') {
+      statusBadgeColor = 'success';
+    } else if (statusText === '대기중') {
+      statusBadgeColor = 'warning';
+    }
+    
+    // 진행중 버튼 표시 여부 (대기중일 때만 표시)
+    const showProgressBtn = statusText === '대기중';
+    
     return `
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <div>
-              <h6 class="card-title mb-1">
-                <a href="detail.html?id=${app.contestId}" class="text-decoration-none text-primary">
-                  ${app.title}
-                </a>
-              </h6>
-              <p class="text-muted small mb-1">
-                <i class="bi bi-calendar3 me-1"></i>${app.date}
-                ${app.recruitCount ? ` · 모집 인원: ${app.recruitCount}명` : ''}
-              </p>
+      <div class="list-group-item">
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="flex-grow-1">
+            <h6 class="mb-1">
+              <a href="detail.html?id=${app.contestId}" class="text-decoration-none text-primary">
+                ${app.title}
+              </a>
+            </h6>
+            <p class="text-muted small mb-1">
+              <i class="bi bi-calendar3 me-1"></i>${app.date}
+              ${app.recruitCount ? ` · 모집 인원: ${app.recruitCount}명` : ''}
+            </p>
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              ${app.role ? `<span class="badge bg-info">${app.role}</span>` : ''}
+              ${app.level ? `<span class="badge bg-warning text-dark">${app.level}</span>` : ''}
+              ${app.host ? `<span class="badge bg-secondary">${app.host}</span>` : ''}
             </div>
-            <span class="badge bg-${app.status === '모집중' ? 'success' : 'secondary'}">${app.status}</span>
-          </div>
-          <div class="d-flex flex-wrap gap-2 mb-2">
-            ${app.role ? `<span class="badge bg-info">${app.role}</span>` : ''}
-            ${app.level ? `<span class="badge bg-warning text-dark">${app.level}</span>` : ''}
-            ${app.host ? `<span class="badge bg-secondary">${app.host}</span>` : ''}
-          </div>
-          <div class="d-flex justify-content-between align-items-center">
             <small class="text-muted">
               <i class="bi bi-clock me-1"></i>신청일: ${formattedDate}
             </small>
-            <button class="btn btn-sm btn-outline-danger" onclick="cancelApplication(${index}, ${app.contestId})">
-              <i class="bi bi-x-circle me-1"></i>신청 취소
-            </button>
+          </div>
+          <div class="d-flex flex-column align-items-end gap-2">
+            <span class="badge bg-${statusBadgeColor}" id="status-${index}">${statusText}</span>
+            <div class="d-flex gap-1">
+              ${showProgressBtn ? `
+              <button class="btn btn-sm btn-success" onclick="updateContestStatus(${index}, '진행중')">
+                <i class="bi bi-play-circle me-1"></i>진행중
+              </button>
+              ` : ''}
+              <button class="btn btn-sm btn-danger" onclick="cancelApplication(${index}, ${app.contestId})">
+                <i class="bi bi-x-circle me-1"></i>취소
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -154,8 +172,84 @@ function loadAppliedContests() {
     <div class="mb-3">
       <span class="badge bg-primary">총 ${userApplications.length}개의 대회에 신청했습니다</span>
     </div>
-    ${listHtml}
+    <div class="list-group">
+      ${listHtml}
+    </div>
   `;
+}
+
+// 대회 상태 업데이트 함수 (대기중 → 진행중)
+function updateContestStatus(index, newStatus) {
+  const userData = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
+  const loggedUser = userData ? userData.email : localStorage.getItem('loggedUser');
+  
+  if (!loggedUser) {
+    alert('로그인이 필요합니다.');
+    return;
+  }
+  
+  const myApplications = JSON.parse(localStorage.getItem('myApplications') || '[]');
+  const userApplications = myApplications.filter(app => app.user === loggedUser);
+  
+  if (index < 0 || index >= userApplications.length) {
+    return;
+  }
+  
+  // 해당 항목 찾기
+  const targetApp = userApplications[index];
+  const globalIndex = myApplications.findIndex(app => 
+    app.user === loggedUser && 
+    app.contestId === targetApp.contestId && 
+    app.appliedAt === targetApp.appliedAt
+  );
+  
+  if (globalIndex === -1) return;
+  
+  // 상태 업데이트
+  myApplications[globalIndex].status = newStatus;
+  localStorage.setItem('myApplications', JSON.stringify(myApplications));
+  
+  // 진행중으로 변경 시 캘린더에 추가
+  if (newStatus === '진행중') {
+    syncToCalendar(targetApp);
+  }
+  
+  alert(`✅ 대회 상태가 "${newStatus}"으로 변경되었습니다.`);
+  loadAppliedContests(); // 목록 다시 로드
+}
+
+// 캘린더에 동기화
+function syncToCalendar(contest) {
+  const STORAGE_KEY = 'seeandyou_events';
+  let events = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  
+  // 이미 같은 대회가 캘린더에 있는지 확인
+  const existingIndex = events.findIndex(e => 
+    e.title.includes(contest.title) && e.content && e.content.includes('See&YOU 팀 프로젝트 진행')
+  );
+  
+  const eventDate = contest.date.split(' ~ ')[0]; // 시작일 추출
+  const calendarEvent = {
+    id: existingIndex !== -1 ? events[existingIndex].id : Date.now().toString(),
+    title: `${contest.title} (진행중)`,
+    date: eventDate,
+    content: 'See&YOU 팀 프로젝트 진행',
+    location: '',
+    priority: 'high'
+  };
+  
+  if (existingIndex !== -1) {
+    // 이미 있으면 업데이트
+    events[existingIndex] = calendarEvent;
+  } else {
+    // 없으면 추가
+    events.push(calendarEvent);
+  }
+  
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+  
+  // 캘린더 페이지가 열려있다면 새로고침 (선택사항)
+  console.log('캘린더에 동기화되었습니다:', calendarEvent);
 }
 
 // 신청 취소 함수
@@ -164,8 +258,13 @@ function cancelApplication(index, contestId) {
     return;
   }
   
-  const loggedUser = localStorage.getItem('loggedUser');
-  if (!loggedUser) return;
+  const userData = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
+  const loggedUser = userData ? userData.email : localStorage.getItem('loggedUser');
+  
+  if (!loggedUser) {
+    alert('로그인이 필요합니다.');
+    return;
+  }
   
   const myApplications = JSON.parse(localStorage.getItem('myApplications') || '[]');
   const userApplications = myApplications.filter(app => app.user === loggedUser);
@@ -180,12 +279,33 @@ function cancelApplication(index, contestId) {
     );
     
     if (globalIndex !== -1) {
+      const removedApp = myApplications[globalIndex];
+      
+      // localStorage에서 신청 내역 제거
       myApplications.splice(globalIndex, 1);
       localStorage.setItem('myApplications', JSON.stringify(myApplications));
+      
+      // 캘린더에서도 제거
+      removeFromCalendar(removedApp);
+      
       alert('✅ 신청이 취소되었습니다.');
       loadAppliedContests(); // 목록 다시 로드
     }
   }
+}
+
+// 캘린더에서 제거
+function removeFromCalendar(contest) {
+  const STORAGE_KEY = 'seeandyou_events';
+  let events = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  
+  // 해당 대회와 관련된 이벤트 찾아서 제거 (제목에 대회명이 포함된 경우)
+  events = events.filter(e => 
+    !(e.title.includes(contest.title) && (e.content && e.content.includes('See&YOU 팀 프로젝트 진행')))
+  );
+  
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+  console.log('캘린더에서 제거되었습니다:', contest.title);
 }
 
 // 프로필 편집 기능

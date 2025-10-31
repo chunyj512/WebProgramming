@@ -5,36 +5,31 @@ let selectedEventId = null;
 
 const STORAGE_KEY = 'seeandyou_events';
 
-// #6 [추가] 달력 헤더 DOM 요소 참조 – 현재 년/월 표시용
-const calendarBody = document.getElementById('calendarBody');
-const eventList = document.getElementById('eventList');
-const currentDateElement = document.getElementById('currentDate');
-const currentMonthLabel = document.getElementById('currentMonthLabel');
-const prevMonthBtn = document.getElementById('prevMonth');
-const nextMonthBtn = document.getElementById('nextMonth');
-
-// #1 [추가] 검색 기능 DOM 요소 참조 – 검색창 및 초기화 버튼
-const searchInput = document.getElementById('searchInput');
-const clearSearchBtn = document.getElementById('clearSearchBtn');
-
-const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
-const detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
-const eventForm = document.getElementById('eventForm');
-const saveEventBtn = document.getElementById('saveEvent');
-const editEventBtn = document.getElementById('editEvent');
-const deleteEventBtn = document.getElementById('deleteEvent');
-
-const selectedDateInput = document.getElementById('selectedDate');
-const eventTitleInput = document.getElementById('eventTitle');
-const eventContentInput = document.getElementById('eventContent');
-const eventLocationInput = document.getElementById('eventLocation');
-const eventPrioritySelect = document.getElementById('eventPriority');
-
-const detailDateInput = document.getElementById('detailDate');
-const detailTitleInput = document.getElementById('detailTitle');
-const detailContentInput = document.getElementById('detailContent');
-const detailLocationInput = document.getElementById('detailLocation');
-const detailPrioritySelect = document.getElementById('detailPriority');
+// DOM 요소 참조 (DOMContentLoaded에서 초기화)
+let calendarBody;
+let eventList;
+let currentDateElement;
+let currentMonthLabel;
+let prevMonthBtn;
+let nextMonthBtn;
+let searchInput;
+let clearSearchBtn;
+let eventModal;
+let detailModal;
+let eventForm;
+let saveEventBtn;
+let editEventBtn;
+let deleteEventBtn;
+let selectedDateInput;
+let eventTitleInput;
+let eventContentInput;
+let eventLocationInput;
+let eventPrioritySelect;
+let detailDateInput;
+let detailTitleInput;
+let detailContentInput;
+let detailLocationInput;
+let detailPrioritySelect;
 
 function loadEvents() {
     try {
@@ -61,15 +56,20 @@ function saveEvents(eventsArray) {
 }
 
 function renderCalendar() {
-    const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-    const daysInPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
+    console.log('📅 renderCalendar 시작:', currentYear, '년', currentMonth, '월');
+    
+    try {
+        const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+        const daysInPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
 
-    let html = '';
-    let dayCount = 1;
-    let nextMonthDayCount = 1;
+        console.log('📅 날짜 정보:', { firstDay, daysInMonth, daysInPrevMonth });
 
-    for (let week = 0; week < 6; week++) {
+        let html = '';
+        let dayCount = 1;
+        let nextMonthDayCount = 1;
+
+        for (let week = 0; week < 6; week++) {
         html += '<tr>';
 
         for (let day = 0; day < 7; day++) {
@@ -135,33 +135,50 @@ function renderCalendar() {
         if (dayCount > daysInMonth) break;
     }
 
-    calendarBody.innerHTML = html;
+        console.log('📅 HTML 생성 완료, 길이:', html.length);
 
-    // #10 [수정] 날짜 클릭 이벤트 연결 – 모든 셀 클릭 가능하도록 개선
-    calendarBody.querySelectorAll('td[data-date]').forEach(cell => {
-        cell.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (e.target.classList.contains('event-item')) return;
-            
-            const date = cell.getAttribute('data-date');
-            console.log('클릭된 날짜:', date);
-            
-            if (date && date !== '') {
-                openAddModal(date);
-            }
-        });
-    });
+        if (!calendarBody) {
+            console.error('❌ calendarBody 요소를 찾을 수 없습니다.');
+            return;
+        }
 
-    calendarBody.querySelectorAll('.event-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const eventId = parseInt(item.getAttribute('data-event-id'));
-            openDetailModal(eventId);
+        calendarBody.innerHTML = html;
+        console.log('✅ calendarBody.innerHTML 업데이트 완료');
+
+        // #10 [수정] 날짜 클릭 이벤트 연결 – 모든 셀 클릭 가능하도록 개선
+        calendarBody.querySelectorAll('td[data-date]').forEach(cell => {
+            cell.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (e.target.classList.contains('event-item')) return;
+                
+                const date = cell.getAttribute('data-date');
+                console.log('클릭된 날짜:', date);
+                
+                if (date && date !== '') {
+                    openAddModal(date);
+                }
+            });
         });
-    });
+
+        calendarBody.querySelectorAll('.event-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const eventId = parseInt(item.getAttribute('data-event-id'));
+                openDetailModal(eventId);
+            });
+        });
+    } catch (error) {
+        console.error('❌ renderCalendar 에러:', error);
+        console.error('에러 스택:', error.stack);
+    }
 }
 
 function renderEventList() {
+    if (!eventList) {
+        console.error('eventList 요소를 찾을 수 없습니다.');
+        return;
+    }
+
     const sortedEvents = [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
 
     if (sortedEvents.length === 0) {
@@ -473,24 +490,95 @@ function updateMonthLabel() {
 }
 
 function updateCurrentDate() {
-    const now = new Date();
-    const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        weekday: 'long'
-    };
-    currentDateElement.textContent = now.toLocaleDateString('ko-KR', options);
+    if (currentDateElement) {
+        const now = new Date();
+        const options = { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            weekday: 'long'
+        };
+        currentDateElement.textContent = now.toLocaleDateString('ko-KR', options);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // DOM 요소 참조 초기화
+    calendarBody = document.getElementById('calendarBody');
+    eventList = document.getElementById('eventList');
+    currentDateElement = document.getElementById('currentDate');
+    currentMonthLabel = document.getElementById('currentMonthLabel');
+    prevMonthBtn = document.getElementById('prevMonth');
+    nextMonthBtn = document.getElementById('nextMonth');
+    searchInput = document.getElementById('searchInput');
+    clearSearchBtn = document.getElementById('clearSearchBtn');
+    
+    // 필수 요소 확인
+    if (!calendarBody) {
+        console.error('❌ calendarBody 요소를 찾을 수 없습니다!');
+        return;
+    }
+    
+    if (!eventList) {
+        console.error('❌ eventList 요소를 찾을 수 없습니다!');
+        return;
+    }
+    
+    if (!currentMonthLabel) {
+        console.error('❌ currentMonthLabel 요소를 찾을 수 없습니다!');
+        return;
+    }
+    
+    // Bootstrap 모달 초기화 (에러 처리)
+    try {
+        const eventModalElement = document.getElementById('eventModal');
+        const detailModalElement = document.getElementById('detailModal');
+        
+        if (eventModalElement) {
+            eventModal = new bootstrap.Modal(eventModalElement);
+        }
+        
+        if (detailModalElement) {
+            detailModal = new bootstrap.Modal(detailModalElement);
+        }
+    } catch (error) {
+        console.error('Bootstrap 모달 초기화 실패:', error);
+    }
+    
+    eventForm = document.getElementById('eventForm');
+    saveEventBtn = document.getElementById('saveEvent');
+    editEventBtn = document.getElementById('editEvent');
+    deleteEventBtn = document.getElementById('deleteEvent');
+    
+    selectedDateInput = document.getElementById('selectedDate');
+    eventTitleInput = document.getElementById('eventTitle');
+    eventContentInput = document.getElementById('eventContent');
+    eventLocationInput = document.getElementById('eventLocation');
+    eventPrioritySelect = document.getElementById('eventPriority');
+    
+    detailDateInput = document.getElementById('detailDate');
+    detailTitleInput = document.getElementById('detailTitle');
+    detailContentInput = document.getElementById('detailContent');
+    detailLocationInput = document.getElementById('detailLocation');
+    detailPrioritySelect = document.getElementById('detailPriority');
+
+    console.log('✅ DOM 요소 초기화 완료');
+    console.log('calendarBody:', calendarBody);
+    console.log('eventList:', eventList);
+    console.log('currentMonthLabel:', currentMonthLabel);
 
     loadEvents();
+    console.log('✅ 이벤트 로드 완료:', events.length, '개');
 
     updateCurrentDate();
     updateMonthLabel();
+    
+    console.log('✅ 캘린더 렌더링 시작...');
     renderCalendar();
+    console.log('✅ 캘린더 렌더링 완료');
+    
     renderEventList();
+    console.log('✅ 이벤트 목록 렌더링 완료');
 
     prevMonthBtn.addEventListener('click', () => changeMonth('prev'));
     nextMonthBtn.addEventListener('click', () => changeMonth('next'));
