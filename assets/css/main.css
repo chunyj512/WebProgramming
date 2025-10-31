@@ -233,29 +233,116 @@ nav ul li a {
 main {
   padding: 20px;
 }
-section {
-  margin-bottom: 40px;
+/* 대회 카드 섹션 스타일 */
+.contest-section {
+  margin-bottom: 60px;
 }
 
-.card-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+.contest-section h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #003399;
+  border-left: 5px solid #4a90e2;
+  padding-left: 10px;
+  margin-bottom: 12px;
 }
 
-.card-container article {
-  flex: 0 0 180px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  text-align: center;
+.contest-section > p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 24px;
 }
 
-.card-container article img {
+/* 카드 그리드 레이아웃 */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+
+/* 개별 카드 스타일 */
+.contest-card {
+  display: block;
+  text-decoration: none;
+  background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: all 0.25s ease;
+  color: #222;
+  border: 1px solid #e5e9f2;
+  position: relative;
+}
+
+/* hover 효과 */
+.contest-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* 카드 이미지 */
+.contest-card img {
   width: 100%;
-  height: auto;
+  height: 160px;
+  object-fit: cover;
+  border-bottom: 1px solid #e5e9f2;
   display: block;
 }
 
+/* 카드 본문 */
+.contest-card .card-body {
+  padding: 14px 16px;
+}
+
+.contest-card .card-body h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #003399;
+  margin-bottom: 6px;
+}
+
+.contest-card .card-body p {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* hover 시 overlay 텍스트 */
+.contest-card::after {
+  content: "자세히 보기 →";
+  position: absolute;
+  bottom: 10px;
+  right: 16px;
+  font-size: 0.85rem;
+  color: #4a90e2;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  font-weight: 500;
+}
+
+.contest-card:hover::after {
+  opacity: 1;
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  
+  .contest-card img {
+    height: 140px;
+  }
+
+  .contest-section {
+    margin-bottom: 40px;
+  }
+}
+
+/* 기존 article 스타일 유지 (다른 페이지에서 사용 가능) */
 article {
   flex: 1;
   border: 1px solid #ddd;
@@ -269,18 +356,6 @@ article img {
 }
 article p {
   padding: 10px;
-}
-
-h2 {
-  font-size: 28px;
-  font-weight: bold;
-  text-align: left;
-  margin-bottom: 8px;
-}
-section p {
-  font-size: 20px;
-  text-align: left;
-  color: #333;
 }
 
 /* 상세 페이지 */
