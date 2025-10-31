@@ -77,22 +77,34 @@ function updateUserProfile(user) {
 }
 
 function loadAppliedContests() {
+  console.log('🔍 loadAppliedContests 시작');
   const section = document.getElementById('appliedContestsSection');
-  if (!section) return;
+  if (!section) {
+    console.error('❌ appliedContestsSection 요소를 찾을 수 없습니다!');
+    return;
+  }
+  console.log('✅ section 찾음:', section);
   
   // 로그인 상태 확인
   const userData = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
   const loggedUser = userData ? userData.email : localStorage.getItem('loggedUser');
   
+  console.log('👤 로그인 사용자:', loggedUser);
+  console.log('📋 사용자 데이터:', userData);
+  
   if (!loggedUser) {
+    console.warn('⚠️ 로그인되지 않음');
     return;
   }
   
   // 신청 내역 가져오기
   const myApplications = JSON.parse(localStorage.getItem('myApplications') || '[]');
+  console.log('📦 전체 신청 내역:', myApplications);
   const userApplications = myApplications.filter(app => app.user === loggedUser);
+  console.log('👤 사용자별 신청 내역:', userApplications);
   
   if (userApplications.length === 0) {
+    console.log('📭 신청한 대회 없음');
     section.innerHTML = `
       <div class="text-center py-5">
         <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
@@ -183,6 +195,8 @@ function loadAppliedContests() {
     
     // 버튼 HTML 직접 생성 (globalIndex 사용)
     let buttonsHTML = '';
+    console.log(`🔘 상태: ${status}, globalIndex: ${globalIndex}`);
+    
     switch (status) {
       case '대기중':
         buttonsHTML = `
@@ -212,7 +226,12 @@ function loadAppliedContests() {
           </button>
         `;
         break;
+      default:
+        buttonsHTML = `<small class="text-muted">상태: ${status}</small>`;
+        console.warn('⚠️ 알 수 없는 상태:', status);
     }
+    
+    console.log(`✅ 버튼 HTML 생성 (길이: ${buttonsHTML.length}):`, buttonsHTML.substring(0, 100));
     
     return `
       <div class="list-group-item">
@@ -247,7 +266,7 @@ function loadAppliedContests() {
     `;
   }).join('');
   
-  section.innerHTML = `
+  const finalHTML = `
     <div class="mb-3">
       <span class="badge bg-primary">총 ${userApplications.length}개의 대회에 신청했습니다</span>
     </div>
@@ -255,10 +274,25 @@ function loadAppliedContests() {
       ${listHtml}
     </div>
   `;
+  
+  console.log('📄 최종 HTML 생성 완료 (길이:', finalHTML.length, ')');
+  console.log('📄 HTML 미리보기:', finalHTML.substring(0, 500));
+  
+  section.innerHTML = finalHTML;
+  
+  // 버튼이 실제로 DOM에 있는지 확인
+  setTimeout(() => {
+    const buttons = section.querySelectorAll('button');
+    console.log(`🔘 렌더링된 버튼 개수: ${buttons.length}`);
+    buttons.forEach((btn, idx) => {
+      console.log(`  버튼 ${idx}:`, btn.textContent.trim(), 'visible:', btn.offsetParent !== null);
+    });
+  }, 100);
 }
 
-// 대회 상태 변경 함수 (대기중/진행중/완료/취소)
-function changeContestStatus(globalIndex, newStatus) {
+// 대회 상태 변경 함수 (대기중/진행중/완료/취소) - 전역 함수로 노출
+window.changeContestStatus = function(globalIndex, newStatus) {
+  console.log('🔄 changeContestStatus 호출:', { globalIndex, newStatus });
   const userData = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
   const loggedUser = userData ? userData.email : localStorage.getItem('loggedUser');
   
@@ -344,8 +378,8 @@ function syncStatusToCalendar(contest, oldStatus, newStatus) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
 }
 
-// 대회 삭제 함수 (완료/취소 상태에서 사용)
-function removeContest(globalIndex) {
+// 대회 삭제 함수 (완료/취소 상태에서 사용) - 전역 함수로 노출
+window.removeContest = function(globalIndex) {
   if (!confirm('정말로 이 대회를 삭제하시겠습니까?')) {
     return;
   }
