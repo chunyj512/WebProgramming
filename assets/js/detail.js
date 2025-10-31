@@ -208,10 +208,11 @@ function setupApplyButton(contest) {
   
   applyContainer.style.display = 'block';
   
-  // 로그인 상태 확인
-  const loggedUser = localStorage.getItem('loggedUser');
+  // 로그인 상태 확인 (localStorage.seeandyou_user 사용)
+  const userData = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
+  const loggedUser = userData ? userData.email : null;
   
-  if (!loggedUser) {
+  if (!userData || !loggedUser) {
     // 로그인 안 된 경우
     applyBtn.style.display = 'none';
     loginPrompt.style.display = 'block';
@@ -238,6 +239,7 @@ function setupApplyButton(contest) {
         
         const newApplication = {
           user: loggedUser,
+          userName: userData.name || loggedUser,
           contestId: parseInt(contest.id),
           title: contest.title,
           date: contest.date,
@@ -252,17 +254,42 @@ function setupApplyButton(contest) {
         applications.push(newApplication);
         localStorage.setItem('myApplications', JSON.stringify(applications));
         
-        alert('✅ 대회 신청이 완료되었습니다!');
+        // 이메일 주소 확인
+        const contestContact = contest.contact || 'contact@seeandyou.ac.kr';
         
-        // 마이페이지로 이동 또는 버튼 상태 변경
-        if (confirm('마이페이지에서 신청 내역을 확인하시겠습니까?')) {
-          window.location.href = 'mypage.html';
-        } else {
-          applyBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>이미 신청한 대회입니다';
-          applyBtn.classList.remove('btn-success');
-          applyBtn.classList.add('btn-secondary');
-          applyBtn.disabled = true;
-        }
+        // 이메일 subject 생성
+        const subject = `[See&YOU 지원] ${contest.title} 지원 신청 - ${userData.name}`;
+        
+        // 이메일 body 생성
+        const body = `안녕하세요.
+
+${userData.name}(${loggedUser})입니다.
+
+${contest.title}에 지원하고자 합니다.
+
+지원 정보:
+- 대회명: ${contest.title}
+- 모집 기간: ${contest.date}
+- 모집 분야: ${contest.role}
+- 난이도: ${contest.level}
+${contest.recruitCount ? `- 총 모집 인원: ${contest.recruitCount}명` : ''}
+
+감사합니다.`;
+
+        // mailto 링크 생성 (특수문자 인코딩)
+        const mailtoLink = `mailto:${contestContact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        
+        // UX 피드백
+        alert('신청이 완료되었습니다! 이메일 창이 열립니다.');
+        
+        // 이메일 클라이언트 열기
+        window.location.href = mailtoLink;
+        
+        // 버튼 상태 변경 (이미 신청한 대회로 표시)
+        applyBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>이미 신청한 대회입니다';
+        applyBtn.classList.remove('btn-success');
+        applyBtn.classList.add('btn-secondary');
+        applyBtn.disabled = true;
       });
     }
   }
