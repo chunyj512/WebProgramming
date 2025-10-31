@@ -4,6 +4,9 @@ header('Content-Type: application/json; charset=utf-8');
 // contests.txt 파일 경로 (data 폴더)
 $file_path = __DIR__ . '/../data/contests.txt';
 
+// 이미지 업로드 디렉토리
+$upload_dir = __DIR__ . '/uploads/';
+
 // 파일이 없으면 생성
 if (!file_exists($file_path)) {
     // 디렉토리가 없으면 생성
@@ -11,6 +14,11 @@ if (!file_exists($file_path)) {
     if (!is_dir($dir)) {
         mkdir($dir, 0755, true);
     }
+}
+
+// 이미지 업로드 디렉토리 생성
+if (!is_dir($upload_dir)) {
+    mkdir($upload_dir, 0777, true);
 }
 
 // POST 데이터 받기
@@ -38,9 +46,39 @@ if (empty($contact)) {
     $contact = 'contact@seeandyou.ac.kr';
 }
 
-// 데이터 형식: 제목 | 모집기간 | 역할 | 난이도 | 상태 | 주최 | 상격 | 연락처 | 활동기간
+// 이미지 업로드 처리
+$imagePath = '';
+if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+    $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    $file_type = $_FILES['image']['type'];
+    
+    if (in_array($file_type, $allowed_types)) {
+        $file_extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+        $filename = time() . '_' . uniqid() . '.' . $file_extension;
+        $target_path = $upload_dir . $filename;
+        
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
+            $imagePath = 'backend/uploads/' . $filename;
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => '이미지 업로드에 실패했습니다.'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => '지원하지 않는 이미지 형식입니다. (JPG, PNG, GIF, WEBP만 가능)'
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+}
+
+// 데이터 형식: 제목 | 모집기간 | 역할 | 난이도 | 상태 | 주최 | 상급 | 연락처 | 이미지경로 | 활동기간
+// 이미지가 없으면 빈 문자열로 저장
 $line = sprintf(
-    "%s | %s | %s | %s | %s | %s | %s | %s | %s\n",
+    "%s | %s | %s | %s | %s | %s | %s | %s | %s | %s\n",
     $title,
     $date,
     $role,
@@ -49,6 +87,7 @@ $line = sprintf(
     $host,
     $rank,
     $contact,
+    $imagePath,
     $activityPeriod
 );
 
@@ -67,4 +106,3 @@ if ($result !== false) {
     ], JSON_UNESCAPED_UNICODE);
 }
 ?>
-

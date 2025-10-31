@@ -36,7 +36,7 @@ foreach ($lines as $index => $line) {
     
     $data = explode(' | ', $line);
     
-    // 기존 8개 필드 또는 새로운 9개 필드(활동 기간 포함) 모두 지원
+    // 최소 8개 필드 필요 (기본 형식)
     if (count($data) >= 8) {
         $contest = [
             'id' => $index,
@@ -47,14 +47,19 @@ foreach ($lines as $index => $line) {
             'status' => trim($data[4]),
             'host' => trim($data[5]),
             'rank' => trim($data[6]),
-            'contact' => trim($data[7])
+            'contact' => trim($data[7]),
+            'imagePath' => '', // 기본값
+            'activityPeriod' => '' // 기본값
         ];
         
-        // 활동 기간 필드가 있으면 추가 (9개 필드인 경우)
-        if (count($data) >= 9) {
+        // 새 형식 (10개 필드): 이미지 경로 + 활동 기간 포함
+        if (count($data) >= 10) {
+            $contest['imagePath'] = trim($data[8]);
+            $contest['activityPeriod'] = trim($data[9]);
+        }
+        // 기존 형식 (9개 필드): 활동 기간만 포함
+        else if (count($data) >= 9) {
             $contest['activityPeriod'] = trim($data[8]);
-        } else {
-            $contest['activityPeriod'] = ''; // 기존 데이터 호환성
         }
         
         $contests[] = $contest;

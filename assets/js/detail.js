@@ -72,10 +72,10 @@ function renderContestDetail(contest) {
   const infoContainer = document.getElementById('contest-info');
   const imageContainer = document.getElementById('contest-image');
 
-  // 이미지
-  const imageName = getImageName(contest.title);
+  // 이미지 - 업로드된 이미지 경로가 있으면 우선 사용, 없으면 기존 방식 사용
+  const imageSrc = contest.imagePath || `assets/images/${getImageName(contest.title)}`;
   imageContainer.innerHTML = `
-    <img src="assets/images/${imageName}" alt="${contest.title}" 
+    <img src="${imageSrc}" alt="${contest.title}" 
          class="img-fluid rounded shadow" 
          style="max-width: 600px; height: auto;"
          onerror="this.src='https://via.placeholder.com/600x300'">
@@ -122,7 +122,7 @@ function renderContestDetail(contest) {
               </td>
             </tr>
             <tr>
-              <th scope="row">상격</th>
+              <th scope="row">상급</th>
               <td>
                 <span class="rank-badge rank-${getRankClass(contest.rank)}">${contest.rank}</span>
               </td>
@@ -177,7 +177,7 @@ function getLevelClass(level) {
   return map[level] || 'beginner';
 }
 
-// 상격 클래스 변환
+// 상급 클래스 변환
 function getRankClass(rank) {
   const map = {
     '교내급': 'local',

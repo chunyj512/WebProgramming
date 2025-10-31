@@ -613,7 +613,7 @@ footer a:hover {
   color: white;
 }
 
-/* 상격 배지 */
+/* 상급 배지 */
 .rank-badge {
   display: inline-block;
   padding: 4px 12px;
@@ -646,6 +646,16 @@ footer a:hover {
 .rank-badge.rank-public {
   background-color: #34495e;
   color: white;
+}
+
+/* 이미지 미리보기 스타일 */
+.img-preview {
+  border: 1px solid #e5e9f2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  max-height: 280px;
+  object-fit: cover;
+  width: 100%;
 }
 
 /* 모집 상태 배지 */

@@ -76,7 +76,7 @@ function filterAndRender() {
     // 난이도 필터
     const matchesLevel = !levelFilter || contest.level === levelFilter;
     
-    // 상격 필터
+    // 상급 필터
     const matchesRank = !rankFilter || contest.rank === rankFilter;
     
     // 모집 상태 필터
@@ -103,9 +103,12 @@ function renderContests(contests) {
 
   container.innerHTML = `
     <div class="card-grid">
-      ${contests.map(contest => `
+      ${contests.map(contest => {
+        // 업로드된 이미지 경로가 있으면 우선 사용, 없으면 기존 방식 사용
+        const imageSrc = contest.imagePath || `assets/images/${getImageName(contest.title)}`;
+        return `
         <a href="detail.html?id=${contest.id}" class="contest-card">
-          <img src="assets/images/${getImageName(contest.title)}" alt="${contest.title}" onerror="this.src='https://via.placeholder.com/250x150'">
+          <img src="${imageSrc}" alt="${contest.title}" onerror="this.src='https://via.placeholder.com/250x150'">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <h3>${contest.title}</h3>
@@ -119,7 +122,8 @@ function renderContests(contests) {
             <p class="text-muted small mb-0">${contest.date}</p>
           </div>
         </a>
-      `).join('')}
+      `;
+      }).join('')}
     </div>
     <div class="text-center mt-4">
       <p class="text-muted">총 <strong>${contests.length}</strong>개의 대회를 찾았습니다.</p>
@@ -147,7 +151,7 @@ function getLevelClass(level) {
   return map[level] || 'beginner';
 }
 
-// 상격 클래스 변환
+// 상급 클래스 변환
 function getRankClass(rank) {
   const map = {
     '교내급': 'local',
