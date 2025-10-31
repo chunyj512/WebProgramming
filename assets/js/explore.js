@@ -132,7 +132,12 @@ function getImageName(title) {
   const imageMap = {
     'AI 해커톤': 'ai_hackathon.png',
     '창업 아이디어 경진대회': 'startup.jpg',
-    '데이터 분석 공모전': 'data.jpg'
+    '데이터 분석 공모전': 'data.jpg',
+    '로봇 공학 경진대회': '1.png',
+    '모바일 앱 개발 해커톤': '2.png',
+    '캡스톤 디자인 경진대회': '3.png',
+    '블록체인 아이디어톤': '4.png',
+    'UX/UI 디자인 대회': '5.png'
   };
   return imageMap[title] || 'default.jpg';
 }
