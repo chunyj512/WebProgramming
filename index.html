@@ -21,20 +21,27 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link active" href="index.html"><i class="bi bi-house me-1"></i>Home</a></li>
           <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-plus-circle me-1"></i>대회 올리기</a></li>
-          <li class="nav-item"><a class="nav-link" href="mypage.html"><i class="bi bi-person-circle me-1"></i>마이페이지</a></li>
           <li class="nav-item"><a class="nav-link" href="detail.html"><i class="bi bi-search me-1"></i>대회 탐색</a></li>
           <li class="nav-item"><a class="nav-link" href="calendar.html"><i class="bi bi-calendar3 me-1"></i>캘린더</a></li>
+          <li class="nav-item"><a class="nav-link" href="mypage.html"><i class="bi bi-person-circle me-1"></i>마이페이지</a></li>
         </ul>
       </div>
     </div>
-  </nav>  
+  </nav>
 
-  <div class="search-bar-wrapper" style="max-width:430px;margin:24px auto 0 auto;">
-    <form action="backend/read.php" method="POST" class="d-flex align-items-center gap-2" style="background: none; box-shadow:none; border:none;">
+  <header class="hero text-center py-5 mb-5">
+    <h1 class="fw-bold mb-3">세상을 바꾸는 아이디어, <span class="text-primary">See&YOU</span>에서 시작하세요</h1>
+    <p class="text-muted">대회를 탐색하고, 팀을 만들고, 함께 성장하는 대학생 커뮤니티</p>
+  </header>
+
+  <div class="search-container">
+    <form action="backend/read.php" method="POST" class="search-form">
       <input type="hidden" name="search_method" value="name">
-      <input type="text" class="form-control rounded-pill" id="contest_name" name="contest_name" placeholder="대회 이름 입력" style="height:42px;font-size:1.1rem;">
-      <button class="btn btn-primary rounded-pill px-3" type="submit" style="height:42px;white-space:nowrap;">검색</button>
-      <button class="btn btn-light border rounded-pill d-flex align-items-center justify-content-center" type="reset" style="height:42px;width:42px;padding:0 0.5em;"><i class="bi bi-x"></i></button>
+      <div class="d-flex align-items-center gap-2">
+        <input type="text" class="form-control search-input" id="contest_name" name="contest_name" placeholder="대회 이름 입력">
+        <button class="btn btn-primary search-btn" type="submit">검색</button>
+        <button class="btn btn-light border reset-btn" type="reset"><i class="bi bi-x"></i></button>
+      </div>
     </form>
   </div>
 
