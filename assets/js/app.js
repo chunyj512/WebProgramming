@@ -1,3 +1,4 @@
+// 전역 변수
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth() + 1;
 let events = [];
@@ -5,7 +6,7 @@ let selectedEventId = null;
 
 const STORAGE_KEY = 'seeandyou_events';
 
-// DOM 요소 참조 (DOMContentLoaded에서 초기화)
+// DOM 요소 참조
 let calendarBody;
 let eventList;
 let currentDateElement;
@@ -56,110 +57,102 @@ function saveEvents(eventsArray) {
 }
 
 function renderCalendar() {
-    console.log('📅 renderCalendar 시작:', currentYear, '년', currentMonth, '월');
-    
+    if (!calendarBody) {
+        console.error('calendarBody 요소를 찾을 수 없습니다.');
+        return;
+    }
+
     try {
         const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
         const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
         const daysInPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
-
-        console.log('📅 날짜 정보:', { firstDay, daysInMonth, daysInPrevMonth });
 
         let html = '';
         let dayCount = 1;
         let nextMonthDayCount = 1;
 
         for (let week = 0; week < 6; week++) {
-        html += '<tr>';
+            html += '<tr>';
 
-        for (let day = 0; day < 7; day++) {
-            const cellIndex = week * 7 + day;
-            const isCurrentMonth = cellIndex >= firstDay && dayCount <= daysInMonth;
-            const isToday = isCurrentMonth && 
-                           dayCount === new Date().getDate() && 
-                           currentYear === new Date().getFullYear() && 
-                           currentMonth === new Date().getMonth() + 1;
+            for (let day = 0; day < 7; day++) {
+                const cellIndex = week * 7 + day;
+                const isCurrentMonth = cellIndex >= firstDay && dayCount <= daysInMonth;
+                const today = new Date();
+                const isToday = isCurrentMonth && 
+                               dayCount === today.getDate() && 
+                               currentYear === today.getFullYear() && 
+                               currentMonth === today.getMonth() + 1;
 
-            let cellClass = 'calendar-date';
-            let dayNumber = '';
-            let dateString = '';
+                let cellClass = 'calendar-date';
+                let dayNumber = '';
+                let dateString = '';
 
-            if (isCurrentMonth) {
-                dayNumber = dayCount;
-                dateString = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
-                dayCount++;
-            } else if (cellIndex < firstDay) {
-                dayNumber = daysInPrevMonth - firstDay + cellIndex + 1;
-                cellClass += ' other-month';
-                let prevMonth = currentMonth - 1;
-                let prevYear = currentYear;
-                if (prevMonth === 0) {
-                    prevMonth = 12;
-                    prevYear--;
+                if (isCurrentMonth) {
+                    dayNumber = dayCount;
+                    dateString = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+                    dayCount++;
+                } else if (cellIndex < firstDay) {
+                    dayNumber = daysInPrevMonth - firstDay + cellIndex + 1;
+                    cellClass += ' other-month';
+                    let prevMonth = currentMonth - 1;
+                    let prevYear = currentYear;
+                    if (prevMonth === 0) {
+                        prevMonth = 12;
+                        prevYear--;
+                    }
+                    dateString = `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+                } else {
+                    dayNumber = nextMonthDayCount;
+                    cellClass += ' other-month';
+                    nextMonthDayCount++;
+                    let nextMonth = currentMonth + 1;
+                    let nextYear = currentYear;
+                    if (nextMonth === 13) {
+                        nextMonth = 1;
+                        nextYear++;
+                    }
+                    dateString = `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
                 }
-                dateString = `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
-            } else {
-                dayNumber = nextMonthDayCount;
-                cellClass += ' other-month';
-                nextMonthDayCount++;
-                let nextMonth = currentMonth + 1;
-                let nextYear = currentYear;
-                if (nextMonth === 13) {
-                    nextMonth = 1;
-                    nextYear++;
+
+                if (isToday) {
+                    cellClass += ' today';
                 }
-                dateString = `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+
+                html += `<td class="calendar-cell" data-date="${dateString}">`;
+                html += `<div class="${cellClass}">${dayNumber}</div>`;
+
+                if (isCurrentMonth) {
+                    const dayEvents = getEventsForDate(dateString);
+                    dayEvents.forEach(event => {
+                        const priorityClass = getPriorityClass(event.priority);
+                        html += `<div class="event-item ${priorityClass}" data-event-id="${event.id}">${escapeHTML(event.title)}</div>`;
+                    });
+                }
+
+                html += '</td>';
             }
 
-            if (isToday) {
-                cellClass += ' today';
-            }
+            html += '</tr>';
 
-            // #9 [수정] 모든 셀에 data-date 속성 부여 – 달력의 모든 날짜 클릭 가능하도록 개선
-            html += `<td class="calendar-cell" data-date="${dateString}">`;
-            html += `<div class="${cellClass}">${dayNumber}</div>`;
-
-            if (isCurrentMonth) {
-                const dayEvents = getEventsForDate(dateString);
-                dayEvents.forEach(event => {
-                    const priorityClass = getPriorityClass(event.priority);
-                    html += `<div class="event-item ${priorityClass}" data-event-id="${event.id}">${escapeHTML(event.title)}</div>`;
-                });
-            }
-
-            html += '</td>';
-        }
-
-        html += '</tr>';
-
-        if (dayCount > daysInMonth) break;
-    }
-
-        console.log('📅 HTML 생성 완료, 길이:', html.length);
-
-        if (!calendarBody) {
-            console.error('❌ calendarBody 요소를 찾을 수 없습니다.');
-            return;
+            if (dayCount > daysInMonth) break;
         }
 
         calendarBody.innerHTML = html;
-        console.log('✅ calendarBody.innerHTML 업데이트 완료');
 
-        // #10 [수정] 날짜 클릭 이벤트 연결 – 모든 셀 클릭 가능하도록 개선
+        // 날짜 클릭 이벤트
         calendarBody.querySelectorAll('td[data-date]').forEach(cell => {
             cell.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (e.target.classList.contains('event-item')) return;
                 
                 const date = cell.getAttribute('data-date');
-                console.log('클릭된 날짜:', date);
-                
-                if (date && date !== '') {
+                if (date) {
                     openAddModal(date);
                 }
             });
         });
 
+        // 이벤트 클릭 이벤트
         calendarBody.querySelectorAll('.event-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -168,8 +161,7 @@ function renderCalendar() {
             });
         });
     } catch (error) {
-        console.error('❌ renderCalendar 에러:', error);
-        console.error('에러 스택:', error.stack);
+        console.error('renderCalendar 에러:', error);
     }
 }
 
@@ -220,8 +212,10 @@ function getEventsForDate(dateString) {
     return events.filter(event => event.date === dateString);
 }
 
-// #2 [추가] 검색 기능 구현 – 제목/내용/장소/우선순위 실시간 필터링
+// 검색 기능
 function performSearch() {
+    if (!eventList || !searchInput) return;
+
     const searchTerm = searchInput.value.trim().toLowerCase();
 
     if (!searchTerm) {
@@ -251,7 +245,6 @@ function performSearch() {
         const eventDate = new Date(event.date);
         const formattedDate = `${eventDate.getMonth() + 1}/${eventDate.getDate()}`;
         const priorityClass = getPriorityClass(event.priority);
-
         const title = highlightSearchTerm(event.title, searchTerm);
 
         html += `
@@ -273,7 +266,6 @@ function performSearch() {
     });
 }
 
-// #3 [추가] 검색어 하이라이트 처리 – 일치하는 키워드 노란색 배경 표시
 function highlightSearchTerm(text, searchTerm) {
     if (!searchTerm) return escapeHTML(text);
 
@@ -288,10 +280,11 @@ function highlightSearchTerm(text, searchTerm) {
     }).join('');
 }
 
-// #4 [추가] 검색 초기화 함수 – 검색창 비우고 전체 일정 목록 표시
 function clearSearch() {
-    searchInput.value = '';
-    renderEventList();
+    if (searchInput) {
+        searchInput.value = '';
+        renderEventList();
+    }
 }
 
 function getPriorityClass(priority) {
@@ -313,63 +306,51 @@ function escapeHTML(str) {
         .replace(/'/g, '&#39;');
 }
 
-// #11 [추가] 일정 추가 모달 열기 – 날짜 설정 및 모달 표시
+// 모달 관련 함수
 function openAddModal(date) {
-    console.log('openAddModal 호출됨, 날짜:', date);
-    console.log('selectedDateInput 존재:', !!selectedDateInput);
-    console.log('eventModal 존재:', !!eventModal);
+    if (!eventModal || !eventForm || !selectedDateInput || !eventTitleInput) return;
     
-    // #12 [수정] 폼 초기화 후 날짜 재설정 – reset()이 날짜를 지우는 문제 해결
     eventForm.reset();
     selectedDateInput.value = date;
     eventTitleInput.focus();
     eventModal.show();
-    
-    console.log('모달 표시 완료, 설정된 날짜:', selectedDateInput.value);
 }
 
-// #14 [추가] 일정 상세보기 모달 열기 – 일정 정보 표시
 function openDetailModal(eventId) {
     const event = events.find(e => e.id === eventId);
-    if (!event) return;
+    if (!event || !detailModal) return;
 
     selectedEventId = eventId;
 
-    // #15 [수정] 날짜 필드 수정 가능하도록 설정 – input type="date" 형식으로 변환
-    detailDateInput.value = event.date;
-    detailTitleInput.value = event.title;
-    detailContentInput.value = event.content || '';
-    detailLocationInput.value = event.location || '';
-    detailPrioritySelect.value = event.priority || '중간';
+    if (detailDateInput) detailDateInput.value = event.date;
+    if (detailTitleInput) detailTitleInput.value = event.title;
+    if (detailContentInput) detailContentInput.value = event.content || '';
+    if (detailLocationInput) detailLocationInput.value = event.location || '';
+    if (detailPrioritySelect) detailPrioritySelect.value = event.priority || '중간';
 
     detailModal.show();
 }
 
-// #13 [추가] 일정 추가 기능 – 새 일정 생성 및 저장
+// 일정 관리 함수
 function addEvent() {
+    if (!eventTitleInput || !selectedDateInput || !eventContentInput || 
+        !eventLocationInput || !eventPrioritySelect) return;
+
     const title = eventTitleInput.value.trim();
     const date = selectedDateInput.value;
     const content = eventContentInput.value.trim();
     const location = eventLocationInput.value.trim();
     const priority = eventPrioritySelect.value;
 
-    console.log('addEvent 호출됨');
-    console.log('제목:', title);
-    console.log('날짜:', date);
-    console.log('내용:', content);
-    console.log('장소:', location);
-    console.log('우선순위:', priority);
-
     if (!title) {
         eventTitleInput.classList.add('is-invalid');
         eventTitleInput.focus();
         return;
-    } else {
-        eventTitleInput.classList.remove('is-invalid');
     }
 
+    eventTitleInput.classList.remove('is-invalid');
+
     if (!date) {
-        console.error('날짜가 비어있습니다!');
         alert('날짜를 선택해주세요.');
         return;
     }
@@ -383,22 +364,18 @@ function addEvent() {
         priority: priority || '중간'
     };
 
-    console.log('새 이벤트:', newEvent);
-
     const updatedEvents = [...events, newEvent];
     saveEvents(updatedEvents);
 
     renderCalendar();
     renderEventList();
-
     eventModal.hide();
-
     eventForm.reset();
 }
 
-// #16 [추가] 일정 수정 기능 – 기존 일정 정보 변경
 function editEvent() {
-    if (!selectedEventId) return;
+    if (!selectedEventId || !detailTitleInput || !detailDateInput || 
+        !detailContentInput || !detailLocationInput || !detailPrioritySelect) return;
 
     const title = detailTitleInput.value.trim();
     const date = detailDateInput.value;
@@ -410,11 +387,10 @@ function editEvent() {
         detailTitleInput.classList.add('is-invalid');
         detailTitleInput.focus();
         return;
-    } else {
-        detailTitleInput.classList.remove('is-invalid');
     }
 
-    // #17 [추가] 날짜 유효성 검사 – 빈 날짜 체크
+    detailTitleInput.classList.remove('is-invalid');
+
     if (!date) {
         alert('날짜를 입력해주세요.');
         detailDateInput.focus();
@@ -439,9 +415,7 @@ function editEvent() {
 
     renderCalendar();
     renderEventList();
-
     detailModal.hide();
-
     selectedEventId = null;
 }
 
@@ -461,7 +435,7 @@ function deleteEvent() {
     }
 }
 
-// #7 [보완] 월 변경 기능 – 현재 년/월 표시 업데이트 포함
+// 달력 네비게이션 함수
 function changeMonth(direction) {
     if (direction === 'prev') {
         currentMonth--;
@@ -482,7 +456,6 @@ function changeMonth(direction) {
     renderEventList();
 }
 
-// #8 [추가] 달력 헤더 년/월 업데이트 함수 – 현재 보고 있는 월 정보 표시
 function updateMonthLabel() {
     if (currentMonthLabel) {
         currentMonthLabel.textContent = `${currentYear}년 ${currentMonth}월`;
@@ -502,6 +475,7 @@ function updateCurrentDate() {
     }
 }
 
+// 초기화
 document.addEventListener('DOMContentLoaded', function() {
     // DOM 요소 참조 초기화
     calendarBody = document.getElementById('calendarBody');
@@ -514,22 +488,12 @@ document.addEventListener('DOMContentLoaded', function() {
     clearSearchBtn = document.getElementById('clearSearchBtn');
     
     // 필수 요소 확인
-    if (!calendarBody) {
-        console.error('❌ calendarBody 요소를 찾을 수 없습니다!');
+    if (!calendarBody || !eventList || !currentMonthLabel) {
+        console.error('필수 DOM 요소를 찾을 수 없습니다.');
         return;
     }
     
-    if (!eventList) {
-        console.error('❌ eventList 요소를 찾을 수 없습니다!');
-        return;
-    }
-    
-    if (!currentMonthLabel) {
-        console.error('❌ currentMonthLabel 요소를 찾을 수 없습니다!');
-        return;
-    }
-    
-    // Bootstrap 모달 초기화 (에러 처리)
+    // Bootstrap 모달 초기화
     try {
         const eventModalElement = document.getElementById('eventModal');
         const detailModalElement = document.getElementById('detailModal');
@@ -545,6 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Bootstrap 모달 초기화 실패:', error);
     }
     
+    // 폼 요소 참조
     eventForm = document.getElementById('eventForm');
     saveEventBtn = document.getElementById('saveEvent');
     editEventBtn = document.getElementById('editEvent');
@@ -562,68 +527,53 @@ document.addEventListener('DOMContentLoaded', function() {
     detailLocationInput = document.getElementById('detailLocation');
     detailPrioritySelect = document.getElementById('detailPriority');
 
-    console.log('✅ DOM 요소 초기화 완료');
-    console.log('calendarBody:', calendarBody);
-    console.log('eventList:', eventList);
-    console.log('currentMonthLabel:', currentMonthLabel);
-
+    // 데이터 로드 및 초기 렌더링
     loadEvents();
-    console.log('✅ 이벤트 로드 완료:', events.length, '개');
-
     updateCurrentDate();
     updateMonthLabel();
-    
-    console.log('✅ 캘린더 렌더링 시작...');
     renderCalendar();
-    console.log('✅ 캘린더 렌더링 완료');
-    
     renderEventList();
-    console.log('✅ 이벤트 목록 렌더링 완료');
 
-    prevMonthBtn.addEventListener('click', () => changeMonth('prev'));
-    nextMonthBtn.addEventListener('click', () => changeMonth('next'));
-
-    saveEventBtn.addEventListener('click', addEvent);
-    editEventBtn.addEventListener('click', editEvent);
-    deleteEventBtn.addEventListener('click', deleteEvent);
-
-    // #5 [추가] 검색 기능 이벤트 리스너 연결 – 실시간 검색 및 초기화 기능
-    if (searchInput) {
-        searchInput.addEventListener('input', performSearch);
+    // 이벤트 리스너 등록
+    if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => changeMonth('prev'));
+    if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => changeMonth('next'));
+    if (saveEventBtn) saveEventBtn.addEventListener('click', addEvent);
+    if (editEventBtn) editEventBtn.addEventListener('click', editEvent);
+    if (deleteEventBtn) deleteEventBtn.addEventListener('click', deleteEvent);
+    if (searchInput) searchInput.addEventListener('input', performSearch);
+    if (clearSearchBtn) clearSearchBtn.addEventListener('click', clearSearch);
+    if (eventForm) {
+        eventForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            addEvent();
+        });
     }
 
-    if (clearSearchBtn) {
-        clearSearchBtn.addEventListener('click', clearSearch);
-    }
-
-    eventForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        addEvent();
-    });
-
+    // 키보드 이벤트
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            if (eventModal._isShown) eventModal.hide();
-            if (detailModal._isShown) detailModal.hide();
+            if (eventModal && eventModal._isShown) eventModal.hide();
+            if (detailModal && detailModal._isShown) detailModal.hide();
         }
     });
 
-    eventModal._element.addEventListener('hidden.bs.modal', () => {
-        eventForm.reset();
-        eventTitleInput.classList.remove('is-invalid');
-    });
+    // 모달 닫힘 이벤트
+    if (eventModal && eventModal._element) {
+        eventModal._element.addEventListener('hidden.bs.modal', () => {
+            if (eventForm) eventForm.reset();
+            if (eventTitleInput) eventTitleInput.classList.remove('is-invalid');
+        });
+    }
 
-    detailModal._element.addEventListener('hidden.bs.modal', () => {
-        selectedEventId = null;
-        detailTitleInput.classList.remove('is-invalid');
-    });
+    if (detailModal && detailModal._element) {
+        detailModal._element.addEventListener('hidden.bs.modal', () => {
+            selectedEventId = null;
+            if (detailTitleInput) detailTitleInput.classList.remove('is-invalid');
+        });
+    }
 });
 
+// 페이지 종료 시 데이터 저장
 window.addEventListener('beforeunload', () => {
     saveEvents(events);
 });
-
-function showMessage(message, type = 'info') {
-
-    console.log(`${type.toUpperCase()}: ${message}`);
-}
