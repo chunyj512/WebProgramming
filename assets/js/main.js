@@ -23,10 +23,35 @@ function initProfileSave() {
   // 프로필 편집/저장/불러오기 예시
 }
 
-// DOMContentLoaded에서 공용 인터페이스 활성화
+// Navbar 로그인 상태 표시
+function updateNavbarLoginStatus() {
+  const navStatus = document.getElementById('nav-login-status');
+  if (!navStatus) return;
+  
+  const user = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
+  
+  if (user) {
+    // 로그인된 경우: 사용자 이름 표시
+    navStatus.innerHTML = `
+      <span class="nav-link text-light">
+        <i class="bi bi-person-circle me-1"></i>
+        <span class="small">👋 ${user.name}님</span>
+      </span>
+    `;
+  } else {
+    // 로그인 안 된 경우: 로그인 링크 표시
+    navStatus.innerHTML = `
+      <a class="nav-link" href="login.html">
+        <i class="bi bi-box-arrow-in-right me-1"></i>로그인
+      </a>
+    `;
+  }
+}
 
+// DOMContentLoaded에서 공용 인터페이스 활성화
 document.addEventListener('DOMContentLoaded', () => {
   handleSearchForm();
   renderRecommendations();
   initProfileSave();
+  updateNavbarLoginStatus(); // Navbar 로그인 상태 업데이트
 });

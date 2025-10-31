@@ -24,6 +24,7 @@
           <li class="nav-item"><a class="nav-link" href="explore.html"><i class="bi bi-search me-1"></i>대회 탐색</a></li>
           <li class="nav-item"><a class="nav-link" href="calendar.html"><i class="bi bi-calendar3 me-1"></i>캘린더</a></li>
           <li class="nav-item"><a class="nav-link active" href="mypage.html"><i class="bi bi-person-circle me-1"></i>마이페이지</a></li>
+          <li class="nav-item" id="nav-login-status"></li>
         </ul>
       </div>
     </div>
@@ -68,6 +69,11 @@
   </div>
 
   <main class="container-fluid px-2 px-md-3 px-lg-4" id="mainContent">
+    <!-- 환영 메시지 배너 -->
+    <div id="welcomeBanner" class="alert alert-primary text-center mt-3" role="alert" style="display: none;">
+      👋 <span id="userNameDisplay"></span>님, 오늘도 좋은 하루 되세요!
+    </div>
+    
     <div class="row g-3">
       <section class="col-12 col-md-6 col-lg-4">
         <div class="card h-100">
@@ -123,9 +129,25 @@
             </div>
 
             <div class="mt-3">
-              <button class="btn btn-outline-secondary btn-sm w-100">
+              <button class="btn btn-outline-secondary btn-sm w-100 mb-2">
                 <i class="bi bi-pencil me-1"></i>프로필 편집
               </button>
+              <button id="logoutBtn" class="btn btn-outline-danger btn-sm w-100 mb-3">
+                <i class="bi bi-box-arrow-right me-1"></i>로그아웃
+              </button>
+            </div>
+            
+            <!-- 간소화된 나의 능력 -->
+            <div class="border-top pt-3 mt-3">
+              <h6 class="card-title mb-2">나의 능력</h6>
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge bg-primary">#기획</span>
+                <span class="badge bg-success">#프론트엔드</span>
+                <span class="badge bg-info">#UI디자인</span>
+                <span class="badge bg-warning">#데이터분석</span>
+                <span class="badge bg-secondary">#JavaScript</span>
+                <span class="badge bg-dark">#React</span>
+              </div>
             </div>
           </div>
         </div>
@@ -133,7 +155,7 @@
 
       <section class="col-12 col-md-6 col-lg-5">
         <!-- 신청한 대회 섹션 -->
-        <div class="card h-100 mb-3">
+        <div class="card h-100">
           <div class="card-header">
             <h5 class="card-title mb-0">📋 신청한 대회</h5>
           </div>
@@ -146,7 +168,9 @@
             </div>
           </div>
         </div>
-        
+      </section>
+
+      <section class="col-12 col-md-12 col-lg-3">
         <!-- 대회 이력 섹션 -->
         <div class="card h-100">
           <div class="card-header">
@@ -357,99 +381,6 @@
               <button class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1"></i>첫 대회 추가하기
               </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="col-12 col-md-12 col-lg-3">
-        <div class="card h-100">
-          <div class="card-header">
-            <h5 class="card-title mb-0">나의 능력</h5>
-          </div>
-          <div class="card-body">
-            <div class="row g-2 mb-3">
-              <div class="col-12 col-md-9">
-                <input type="text" class="form-control" placeholder="새로운 스킬 입력...">
-              </div>
-              <div class="col-12 col-md-3 d-grid">
-                <button class="btn btn-primary h-100">추가</button>
-              </div>
-            </div>
-            
-            <div class="skill-tags">
-              <h6 class="mb-2">보유 스킬</h6>
-              <div class="d-flex flex-wrap gap-1">
-                <span class="badge bg-primary d-flex align-items-center">
-                  #기획 <small class="ms-1">(고급)</small>
-                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
-                </span>
-                <span class="badge bg-success d-flex align-items-center">
-                  #프론트엔드 <small class="ms-1">(중급)</small>
-                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
-                </span>
-                <span class="badge bg-info d-flex align-items-center">
-                  #UI디자인 <small class="ms-1">(중급)</small>
-                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
-                </span>
-                <span class="badge bg-warning d-flex align-items-center">
-                  #데이터분석 <small class="ms-1">(초급)</small>
-                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
-                </span>
-                <span class="badge bg-secondary d-flex align-items-center">
-                  #JavaScript <small class="ms-1">(고급)</small>
-                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
-                </span>
-                <span class="badge bg-dark d-flex align-items-center">
-                  #React <small class="ms-1">(중급)</small>
-                  <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;" title="삭제"></button>
-                </span>
-              </div>
-              
-              <div class="mt-3">
-                <h6 class="mb-2">카테고리별 스킬</h6>
-                <div class="accordion" id="skillAccordion">
-                  <div class="accordion-item">
-                    <h2 class="accordion-header">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#development">
-                        개발 (3개)
-                      </button>
-                    </h2>
-                    <div id="development" class="accordion-collapse collapse" data-bs-parent="#skillAccordion">
-                      <div class="accordion-body">
-                        <span class="badge bg-success me-1">#프론트엔드 (중급)</span>
-                        <span class="badge bg-secondary me-1">#JavaScript (고급)</span>
-                        <span class="badge bg-dark me-1">#React (중급)</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="accordion-item">
-                    <h2 class="accordion-header">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#design">
-                        디자인 (1개)
-                      </button>
-                    </h2>
-                    <div id="design" class="accordion-collapse collapse" data-bs-parent="#skillAccordion">
-                      <div class="accordion-body">
-                        <span class="badge bg-info me-1">#UI디자인 (중급)</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="accordion-item">
-                    <h2 class="accordion-header">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#analysis">
-                        분석 (2개)
-                      </button>
-                    </h2>
-                    <div id="analysis" class="accordion-collapse collapse" data-bs-parent="#skillAccordion">
-                      <div class="accordion-body">
-                        <span class="badge bg-primary me-1">#기획 (고급)</span>
-                        <span class="badge bg-warning me-1">#데이터분석 (초급)</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

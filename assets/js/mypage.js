@@ -1,24 +1,65 @@
 // mypage.html 전용 - 신청한 대회 목록 표시
 
-// 페이지 로드 시 로그인 체크
+// 페이지 로드 시 로그인 체크 및 사용자 정보 표시
 function checkLoginStatus() {
+  const user = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
   const loggedUser = localStorage.getItem('loggedUser');
   const loginRequiredMessage = document.getElementById('loginRequiredMessage');
   const mainContent = document.getElementById('mainContent');
   const pageHeader = document.getElementById('pageHeader');
   
-  if (!loggedUser) {
+  if (!user && !loggedUser) {
     // 로그인 안 된 경우: 전체 콘텐츠 숨기고 로그인 안내 표시
     if (loginRequiredMessage) loginRequiredMessage.style.display = 'block';
     if (mainContent) mainContent.style.display = 'none';
     if (pageHeader) pageHeader.style.display = 'none';
     return false;
   } else {
-    // 로그인 된 경우: 전체 콘텐츠 표시
+    // 로그인 된 경우: 전체 콘텐츠 표시 및 사용자 정보 업데이트
     if (loginRequiredMessage) loginRequiredMessage.style.display = 'none';
     if (mainContent) mainContent.style.display = 'block';
     if (pageHeader) pageHeader.style.display = 'block';
+    
+    // 사용자 정보가 있으면 프로필 업데이트
+    if (user) {
+      updateUserProfile(user);
+    }
+    
     return true;
+  }
+}
+
+// 사용자 정보를 프로필에 동적으로 표시
+function updateUserProfile(user) {
+  // 프로필 카드 정보 업데이트 (첫 번째 section의 프로필 카드)
+  const profileCard = document.querySelector('.col-12.col-md-6.col-lg-4 .card-body');
+  if (profileCard) {
+    const nameElement = profileCard.querySelector('.card-title');
+    const textElements = profileCard.querySelectorAll('.card-text');
+    
+    if (nameElement) {
+      nameElement.textContent = user.name || '사용자';
+    }
+    
+    // 첫 번째 .card-text.text-muted는 전공
+    if (textElements.length > 0 && textElements[0].classList.contains('text-muted')) {
+      textElements[0].textContent = user.major || '컴퓨터융합학부 3학년';
+    }
+    
+    // 두 번째 .card-text는 대학교
+    if (textElements.length > 1 && user.university) {
+      textElements[1].textContent = user.university;
+    }
+  }
+  
+  // 환영 배너 표시
+  const userNameDisplay = document.getElementById('userNameDisplay');
+  if (userNameDisplay) {
+    userNameDisplay.textContent = user.name || '사용자';
+  }
+  const welcomeBanner = document.getElementById('welcomeBanner');
+  if (welcomeBanner) {
+    welcomeBanner.style.display = 'block';
   }
 }
 
@@ -134,14 +175,37 @@ function cancelApplication(index, contestId) {
   }
 }
 
+// 로그아웃 기능
+function setupLogoutButton() {
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (!logoutBtn) return;
+  
+  logoutBtn.addEventListener('click', () => {
+    if (!confirm('정말로 로그아웃하시겠습니까?')) {
+      return;
+    }
+    
+    // localStorage에서 사용자 정보 삭제
+    localStorage.removeItem('seeandyou_user');
+    localStorage.removeItem('loggedUser');
+    localStorage.removeItem('userInfo');
+    
+    alert('로그아웃되었습니다.');
+    
+    // 로그인 페이지로 이동
+    window.location.href = 'login.html';
+  });
+}
+
 // 페이지 로드 시 실행
 document.addEventListener('DOMContentLoaded', () => {
   // 먼저 로그인 체크
   const isLoggedIn = checkLoginStatus();
   
-  // 로그인된 경우에만 신청 내역 로드
+  // 로그인된 경우에만 신청 내역 로드 및 로그아웃 버튼 설정
   if (isLoggedIn) {
     loadAppliedContests();
+    setupLogoutButton();
   }
 });
 
