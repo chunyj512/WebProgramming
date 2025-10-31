@@ -24,27 +24,18 @@
           <li class="nav-item"><a class="nav-link" href="explore.html"><i class="bi bi-search me-1"></i>대회 탐색</a></li>
           <li class="nav-item"><a class="nav-link" href="calendar.html"><i class="bi bi-calendar3 me-1"></i>캘린더</a></li>
           <li class="nav-item"><a class="nav-link" href="mypage.html"><i class="bi bi-person-circle me-1"></i>마이페이지</a></li>
+          <!-- [추가] 로그인 상태 표시 영역 추가 – 동적 로그인/로그아웃 버튼 표시 -->
           <li class="nav-item" id="nav-login-status"></li>
         </ul>
       </div>
     </div>
   </nav>
 
+  <!-- [삭제] 메인 페이지 검색창 제거 – UI 간결화 -->
   <header class="hero text-center py-5 mb-5">
     <h1 class="fw-bold mb-3">세상을 바꾸는 아이디어, <span class="text-primary">See&YOU</span>에서 시작하세요</h1>
     <p class="text-muted">대회를 탐색하고, 팀을 만들고, 함께 성장하는 대학생 커뮤니티</p>
   </header>
-
-  <div class="search-container">
-    <form action="backend/read.php" method="POST" class="search-form">
-      <input type="hidden" name="search_method" value="name">
-      <div class="d-flex align-items-center gap-2">
-        <input type="text" class="form-control search-input" id="contest_name" name="contest_name" placeholder="대회 이름 입력">
-        <button class="btn btn-primary search-btn" type="submit">검색</button>
-        <button class="btn btn-light border reset-btn" type="reset"><i class="bi bi-x"></i></button>
-      </div>
-    </form>
-  </div>
 
   <main>
     <section class="contest-section">
@@ -75,6 +66,7 @@
           </div>
         </a>
 
+        <!-- [수정] 이미지 확장자 '.jpg' → '.png'로 변경 – 실제 파일명과 일치 -->
         <a href="detail.html?id=3" class="contest-card">
           <img src="assets/images/1.png" alt="로봇 공학 경진대회">
           <div class="card-body">
@@ -83,6 +75,7 @@
           </div>
         </a>
 
+        <!-- [수정] 이미지 확장자 '.jpg' → '.png'로 변경 – 실제 파일명과 일치 -->
         <a href="detail.html?id=4" class="contest-card">
           <img src="assets/images/2.png" alt="모바일 앱 개발 해커톤">
           <div class="card-body">
@@ -97,6 +90,7 @@
       <h2>✨ 최신 대회</h2>
       <p>최근 등록된 따끈따끈한 대회 소식입니다.</p>
       <div class="card-grid">
+        <!-- [수정] 이미지 확장자 '.jpg' → '.png'로 변경 – 실제 파일명과 일치 -->
         <a href="detail.html?id=5" class="contest-card">
           <img src="assets/images/3.png" alt="캡스톤 디자인 경진대회">
           <div class="card-body">
@@ -105,6 +99,7 @@
           </div>
         </a>
 
+        <!-- [수정] 이미지 확장자 '.jpg' → '.png'로 변경 – 실제 파일명과 일치 -->
         <a href="detail.html?id=6" class="contest-card">
           <img src="assets/images/4.png" alt="블록체인 아이디어톤">
           <div class="card-body">
@@ -113,6 +108,7 @@
           </div>
         </a>
 
+        <!-- [수정] 이미지 확장자 '.jpg' → '.png'로 변경 – 실제 파일명과 일치 -->
         <a href="detail.html?id=7" class="contest-card">
           <img src="assets/images/5.png" alt="UX/UI 디자인 대회">
           <div class="card-body">

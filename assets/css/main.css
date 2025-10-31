@@ -156,6 +156,32 @@ nav ul li a {
   font-size: 0.95rem;
 }
 
+/* [추가] 작은 레이블 스타일 추가 – date picker의 하위 레이블 스타일 지정 */
+.contest-form .form-label.small {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+/* [추가] checkbox 스타일 추가 – 모집 분야 checkbox 그리드 레이아웃 지원 */
+.contest-form .form-check {
+  padding: 8px 0;
+}
+
+.contest-form .form-check-input {
+  margin-top: 0.3rem;
+  cursor: pointer;
+}
+
+.contest-form .form-check-label {
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+  margin-left: 4px;
+}
+
 .contest-form .form-control,
 .contest-form select {
   width: 100%;
@@ -166,8 +192,21 @@ nav ul li a {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* [추가] date picker 및 file input 스타일 추가 – 업로드 폼의 다양한 입력 타입 지원 */
+.contest-form input[type="date"],
+.contest-form input[type="file"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d9e6;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
 .contest-form .form-control:focus,
-.contest-form select:focus {
+.contest-form select:focus,
+.contest-form input[type="date"]:focus,
+.contest-form input[type="file"]:focus {
   border-color: #4a90e2;
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
   outline: none;
@@ -498,6 +537,24 @@ main {
   .contest-section .d-flex.justify-content-between .btn {
     width: 100%;
   }
+
+  /* [추가] 업로드 폼 모바일 대응 스타일 추가 – 모바일에서 폼 요소 간격 및 크기 조정 */
+  .contest-form .row.g-2 {
+    gap: 12px !important;
+  }
+
+  .contest-form .form-check {
+    padding: 6px 0;
+  }
+
+  .contest-form input[type="file"] {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  .img-preview {
+    max-height: 200px;
+  }
 }
 
 /* 기존 article 스타일 유지 (다른 페이지에서 사용 가능) */
@@ -648,7 +705,7 @@ footer a:hover {
   color: white;
 }
 
-/* 이미지 미리보기 스타일 */
+/* [추가] 이미지 미리보기 스타일 추가 – 대회 등록 시 이미지 미리보기 기능 지원 */
 .img-preview {
   border: 1px solid #e5e9f2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

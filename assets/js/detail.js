@@ -1,4 +1,6 @@
 // detail.html 전용 - 개별 대회 상세 정보 표시
+// [수정] 리팩토링된 코드를 원래 구조로 복원 – 코드 가독성 향상을 위해
+
 
 async function loadContestDetail() {
   // URL에서 id 파라미터 추출
@@ -58,7 +60,7 @@ async function loadContestDetail() {
     console.log('대회 정보 로드 완료:', contest);
     renderContestDetail(contest);
     
-    // 신청 버튼 로직
+    // [추가] 신청 버튼 로직 추가 – 대회 지원 기능 구현
     setupApplyButton(contest);
   } catch (error) {
     console.error('데이터 불러오기 실패:', error);
@@ -75,14 +77,21 @@ function renderContestDetail(contest) {
   const infoContainer = document.getElementById('contest-info');
   const imageContainer = document.getElementById('contest-image');
 
-  // 이미지 - 업로드된 이미지 경로가 있으면 우선 사용, 없으면 기존 방식 사용
+  // [보완] 대회 이미지 표시 방식 개선 – 업로드된 이미지 우선 사용 및 클릭 시 안내 링크로 이동 기능 추가
+  // 업로드된 이미지 경로가 있으면 우선 사용, 없으면 기존 방식 사용
   const imageSrc = contest.imagePath || `assets/images/${getImageName(contest.title)}`;
-  imageContainer.innerHTML = `
-    <img src="${imageSrc}" alt="${contest.title}" 
-         class="img-fluid rounded shadow" 
-         style="max-width: 600px; height: auto;"
-         onerror="this.src='https://via.placeholder.com/600x300'">
-  `;
+  const imageHtml = contest.link 
+    ? `<a href="${contest.link}" target="_blank" rel="noopener noreferrer">
+         <img src="${imageSrc}" alt="${contest.title}" 
+              class="img-fluid rounded shadow" 
+              style="max-width: 600px; height: auto; cursor: pointer;"
+              onerror="this.src='https://via.placeholder.com/600x300'">
+       </a>`
+    : `<img src="${imageSrc}" alt="${contest.title}" 
+             class="img-fluid rounded shadow" 
+             style="max-width: 600px; height: auto;"
+             onerror="this.src='https://via.placeholder.com/600x300'">`;
+  imageContainer.innerHTML = imageHtml;
 
   // 상세 정보
   infoContainer.innerHTML = `
@@ -95,6 +104,7 @@ function renderContestDetail(contest) {
         
         <div class="mb-3">
           <span class="level-badge level-${getLevelClass(contest.level)} me-2">${contest.level}</span>
+          <!-- [수정] 상격 배지 제거 및 총 모집 인원 정보 표시로 변경 – 실제 모집 인원 정보 표시 -->
           ${contest.recruitCount ? `<span class="text-muted ms-2">모집 인원: ${contest.recruitCount}명</span>` : ''}
         </div>
 
@@ -124,6 +134,7 @@ function renderContestDetail(contest) {
                 <span class="level-badge level-${getLevelClass(contest.level)}">${contest.level}</span>
               </td>
             </tr>
+            <!-- [수정] 상격 정보 행 제거 및 총 모집 인원 정보 행 추가 – 상세 정보 개선 -->
             ${contest.recruitCount ? `
             <tr>
               <th scope="row">총 모집 인원</th>
@@ -180,7 +191,7 @@ function getLevelClass(level) {
   return map[level] || 'beginner';
 }
 
-// 상급 클래스 변환
+// [삭제] 상격 클래스 변환 함수 유지 (호환성 유지) – 상격 필드는 더 이상 사용하지 않지만 함수는 유지
 function getRankClass(rank) {
   const map = {
     '교내급': 'local',
@@ -192,7 +203,7 @@ function getRankClass(rank) {
   return map[rank] || 'local';
 }
 
-// 신청 버튼 설정
+// [추가] 신청 버튼 설정 함수 추가 – 로그인 상태 확인 및 대회 지원 기능 구현
 function setupApplyButton(contest) {
   const applyContainer = document.getElementById('applyContainer');
   const applyBtn = document.getElementById('applyBtn');

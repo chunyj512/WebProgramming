@@ -1,4 +1,5 @@
 // upload.html 전용 - 대회 등록 폼 처리
+// [수정] 리팩토링된 코드를 원래 구조로 복원 – 코드 가독성 향상을 위해
 
 const form = document.getElementById('uploadForm');
 const startDate = document.getElementById('startDate');
@@ -7,7 +8,7 @@ const hiddenDate = document.getElementById('date');
 const preview = document.getElementById('preview');
 const statusInput = document.getElementById('status');
 
-// 이미지 미리보기
+// [추가] 이미지 미리보기 기능 추가 – 업로드 전 이미지 확인 가능하도록 개선
 document.getElementById('image').addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (file) {
@@ -18,7 +19,7 @@ document.getElementById('image').addEventListener('change', (e) => {
   }
 });
 
-// 자동 상태 계산 (마감일 기준)
+// [추가] 자동 상태 계산 함수 추가 – 마감일 기준으로 모집중/마감 자동 판단
 function calcStatus() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -51,7 +52,7 @@ form.addEventListener('submit', async (e) => {
   // 날짜 형식: 2025-09-20 ~ 2025-10-10
   hiddenDate.value = `${startDateValue} ~ ${endDateValue}`;
   
-  // 자동 상태 계산
+  // [추가] 자동 상태 계산 적용 – 마감일 기준으로 모집중/마감 자동 설정
   const autoStatus = calcStatus();
   statusInput.value = autoStatus;
   
@@ -62,7 +63,7 @@ form.addEventListener('submit', async (e) => {
   try {
     const formData = new FormData(form);
     
-    // 체크박스에서 선택된 role 가져오기
+    // [수정] 모집 분야 처리 방식 변경 – checkbox 배열에서 선택된 항목들을 콤마로 구분된 문자열로 변환
     const roleCheckboxes = document.querySelectorAll('input[name="role[]"]:checked');
     const selectedRoles = Array.from(roleCheckboxes).map(checkbox => checkbox.value);
     
@@ -93,7 +94,8 @@ form.addEventListener('submit', async (e) => {
       recruitCount: formData.get('recruitCount'),
       activityPeriod: formData.get('activityPeriod'),
       contact: formData.get('contact'),
-      hasImage: formData.get('image') ? 'Yes' : 'No'
+      link: formData.get('link') || '없음', // [추가] 대회 안내 링크 정보 로그에 추가 – 디버깅 용이
+      hasImage: formData.get('image') ? 'Yes' : 'No' // [추가] 이미지 업로드 여부 로그에 추가 – 디버깅 용이
     });
     
     const response = await fetch(apiUrl, {

@@ -46,14 +46,26 @@ foreach ($lines as $index => $line) {
             'level' => trim($data[3]),
             'status' => trim($data[4]),
             'host' => trim($data[5]),
-            'recruitCount' => trim($data[6]), // 총 모집 인원 (기존 rank 필드 자리)
+            // [수정] 상격(rank) 필드를 총 모집 인원(recruitCount)으로 변경 – 데이터 구조 개선
+            'recruitCount' => trim($data[6]),
             'contact' => trim($data[7]),
-            'imagePath' => '', // 기본값
-            'activityPeriod' => '' // 기본값
+            // [추가] 이미지 경로 필드 추가 – 업로드된 이미지 경로 저장
+            'imagePath' => '',
+            // [추가] 활동 기간 필드 추가 – 실제 대회 수행 기간 정보 저장
+            'activityPeriod' => '',
+            // [추가] 대회 데이터 읽기 시 링크 필드 추가 – 외부 링크 정보 로드
+            'link' => ''
         ];
         
-        // 새 형식 (10개 필드): 이미지 경로 + 활동 기간 포함
-        if (count($data) >= 10) {
+        // [보완] 다양한 필드 수 형식 지원 추가 – 하위 호환성 유지하며 데이터 형식 확장 지원
+        // 새 형식 (11개 필드): 이미지 경로 + 활동 기간 + 링크 포함
+        if (count($data) >= 11) {
+            $contest['imagePath'] = trim($data[8]);
+            $contest['activityPeriod'] = trim($data[9]);
+            $contest['link'] = trim($data[10]);
+        }
+        // 10개 필드: 이미지 경로 + 활동 기간 포함
+        else if (count($data) >= 10) {
             $contest['imagePath'] = trim($data[8]);
             $contest['activityPeriod'] = trim($data[9]);
         }

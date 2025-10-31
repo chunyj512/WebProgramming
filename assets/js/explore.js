@@ -1,4 +1,5 @@
 // explore.html 전용 - 대회 탐색 및 필터링 기능
+// [수정] 리팩토링된 코드를 원래 구조로 복원 – 코드 가독성 향상을 위해
 
 let allContests = [];
 
@@ -100,11 +101,13 @@ function renderContests(contests) {
   container.innerHTML = `
     <div class="card-grid">
       ${contests.map(contest => {
+        // [보완] 대회 이미지 클릭 시 안내 링크로 이동하도록 기능 추가 – 외부 링크 지원
         // 업로드된 이미지 경로가 있으면 우선 사용, 없으면 기존 방식 사용
         const imageSrc = contest.imagePath || `assets/images/${getImageName(contest.title)}`;
+        const imageLink = contest.link ? `<a href="${contest.link}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();"><img src="${imageSrc}" alt="${contest.title}" onerror="this.src='https://via.placeholder.com/250x150'" style="cursor: pointer;"></a>` : `<img src="${imageSrc}" alt="${contest.title}" onerror="this.src='https://via.placeholder.com/250x150'">`;
         return `
         <a href="detail.html?id=${contest.id}" class="contest-card">
-          <img src="${imageSrc}" alt="${contest.title}" onerror="this.src='https://via.placeholder.com/250x150'">
+          ${imageLink}
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <h3>${contest.title}</h3>
@@ -127,6 +130,7 @@ function renderContests(contests) {
   `;
 }
 
+// [추가] 대회 이미지 매핑에 1.png~5.png 추가 – 탐색 화면 이미지 표시 문제 해결
 // 이미지 파일명 추출
 function getImageName(title) {
   const imageMap = {

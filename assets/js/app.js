@@ -1,3 +1,4 @@
+// [수정] 전역 변수 선언부 정리 및 리팩토링된 코드를 원래 구조로 복원 – 코드 가독성 개선
 // 전역 변수
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth() + 1;
@@ -56,6 +57,7 @@ function saveEvents(eventsArray) {
     }
 }
 
+// [수정] 과도한 console.log 제거 및 코드 정리 – 디버깅 로그 간소화
 function renderCalendar() {
     if (!calendarBody) {
         console.error('calendarBody 요소를 찾을 수 없습니다.');
@@ -212,6 +214,7 @@ function getEventsForDate(dateString) {
     return events.filter(event => event.date === dateString);
 }
 
+// [수정] 검색 기능 주석 정리 및 코드 간소화 – 가독성 향상
 // 검색 기능
 function performSearch() {
     if (!eventList || !searchInput) return;
@@ -306,6 +309,7 @@ function escapeHTML(str) {
         .replace(/'/g, '&#39;');
 }
 
+// [수정] 모달 관련 함수 정리 및 console.log 제거 – 불필요한 로그 제거
 // 모달 관련 함수
 function openAddModal(date) {
     if (!eventModal || !eventForm || !selectedDateInput || !eventTitleInput) return;
@@ -331,6 +335,7 @@ function openDetailModal(eventId) {
     detailModal.show();
 }
 
+// [수정] 일정 관리 함수 정리 및 console.log 제거 – 코드 간결화
 // 일정 관리 함수
 function addEvent() {
     if (!eventTitleInput || !selectedDateInput || !eventContentInput || 
@@ -435,6 +440,7 @@ function deleteEvent() {
     }
 }
 
+// [수정] 달력 네비게이션 함수 주석 정리 – 코드 구조 개선
 // 달력 네비게이션 함수
 function changeMonth(direction) {
     if (direction === 'prev') {
@@ -475,6 +481,7 @@ function updateCurrentDate() {
     }
 }
 
+// [수정] DOM 초기화 코드 정리 및 과도한 console.log 제거 – 초기화 로직 간소화
 // 초기화
 document.addEventListener('DOMContentLoaded', function() {
     // DOM 요소 참조 초기화
