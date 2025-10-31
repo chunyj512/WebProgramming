@@ -247,7 +247,7 @@ function setupApplyButton(contest) {
           level: contest.level,
           host: contest.host,
           recruitCount: contest.recruitCount || '',
-          status: contest.status,
+          status: '대기중', // 신청 시 "대기중" 상태로 저장
           appliedAt: new Date().toISOString()
         };
         

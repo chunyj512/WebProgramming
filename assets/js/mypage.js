@@ -50,8 +50,30 @@ function updateUserProfile(user) {
     if (textElements.length > 1 && user.university) {
       textElements[1].textContent = user.university;
     }
+    
+    // 자기소개 업데이트 (있는 경우)
+    if (user.bio) {
+      let bioElement = profileCard.querySelector('.card-text.small.text-muted');
+      if (!bioElement && textElements.length > 2) {
+        // 자기소개 영역 찾기 또는 생성
+        const mt3Div = profileCard.querySelector('.mt-3.mb-3');
+        if (mt3Div) {
+          const bioText = mt3Div.querySelector('.card-text.small.text-muted');
+          if (bioText) {
+            bioText.textContent = `"${user.bio}"`;
+          } else {
+            // 자기소개 영역이 없으면 생성
+            const newBio = document.createElement('p');
+            newBio.className = 'card-text small text-muted';
+            newBio.textContent = `"${user.bio}"`;
+            mt3Div.appendChild(newBio);
+          }
+        }
+      } else if (bioElement) {
+        bioElement.textContent = `"${user.bio}"`;
+      }
+    }
   }
-  
 }
 
 function loadAppliedContests() {
@@ -166,6 +188,69 @@ function cancelApplication(index, contestId) {
   }
 }
 
+// 프로필 편집 기능
+function setupProfileEdit() {
+  const profileEditBtn = document.getElementById('profileEditBtn');
+  const saveProfileBtn = document.getElementById('saveProfileBtn');
+  const profileEditModal = new bootstrap.Modal(document.getElementById('profileEditModal'));
+  
+  if (!profileEditBtn) return;
+  
+  // 프로필 편집 버튼 클릭 시 모달 열기
+  profileEditBtn.addEventListener('click', () => {
+    const user = JSON.parse(localStorage.getItem('seeandyou_user') || 'null');
+    
+    if (!user) {
+      alert('사용자 정보를 불러올 수 없습니다.');
+      return;
+    }
+    
+    // 모달에 현재 정보 채우기
+    document.getElementById('editName').value = user.name || '';
+    document.getElementById('editMajor').value = user.major || '';
+    document.getElementById('editUniversity').value = user.university || '';
+    document.getElementById('editBio').value = user.bio || '';
+    
+    // 모달 열기
+    profileEditModal.show();
+  });
+  
+  // 저장 버튼 클릭 시
+  if (saveProfileBtn) {
+    saveProfileBtn.addEventListener('click', () => {
+      const editName = document.getElementById('editName').value.trim();
+      const editMajor = document.getElementById('editMajor').value.trim();
+      const editUniversity = document.getElementById('editUniversity').value.trim();
+      const editBio = document.getElementById('editBio').value.trim();
+      
+      // 유효성 검사
+      if (!editName || !editMajor || !editUniversity) {
+        alert('이름, 전공, 대학교는 필수 입력 항목입니다.');
+        return;
+      }
+      
+      // 사용자 정보 업데이트
+      const user = JSON.parse(localStorage.getItem('seeandyou_user') || '{}');
+      user.name = editName;
+      user.major = editMajor;
+      user.university = editUniversity;
+      user.bio = editBio;
+      user.updatedAt = new Date().toISOString();
+      
+      // localStorage에 저장
+      localStorage.setItem('seeandyou_user', JSON.stringify(user));
+      
+      // 프로필 화면 업데이트
+      updateUserProfile(user);
+      
+      // 모달 닫기
+      profileEditModal.hide();
+      
+      alert('✅ 프로필이 저장되었습니다.');
+    });
+  }
+}
+
 // 로그아웃 기능
 function setupLogoutButton() {
   const logoutBtn = document.getElementById('logoutBtn');
@@ -193,9 +278,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 먼저 로그인 체크
   const isLoggedIn = checkLoginStatus();
   
-  // 로그인된 경우에만 신청 내역 로드 및 로그아웃 버튼 설정
+  // 로그인된 경우에만 신청 내역 로드 및 버튼 설정
   if (isLoggedIn) {
     loadAppliedContests();
+    setupProfileEdit();
     setupLogoutButton();
   }
 });

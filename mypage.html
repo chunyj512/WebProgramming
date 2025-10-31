@@ -124,7 +124,7 @@
             </div>
 
             <div class="mt-3">
-              <button class="btn btn-outline-secondary btn-sm w-100 mb-2">
+              <button id="profileEditBtn" class="btn btn-outline-secondary btn-sm w-100 mb-2">
                 <i class="bi bi-pencil me-1"></i>프로필 편집
               </button>
               <button id="logoutBtn" class="btn btn-outline-danger btn-sm w-100 mb-3">
@@ -385,6 +385,45 @@
       </section>
     </div>
   </main>
+
+  <!-- 프로필 편집 모달 -->
+  <div class="modal fade" id="profileEditModal" tabindex="-1" aria-labelledby="profileEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="profileEditModalLabel">프로필 편집</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="profileEditForm">
+            <div class="mb-3">
+              <label for="editName" class="form-label">이름 <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editName" name="name" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="editMajor" class="form-label">전공 <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editMajor" name="major" required placeholder="예: 컴퓨터융합학부 3학년">
+            </div>
+            
+            <div class="mb-3">
+              <label for="editUniversity" class="form-label">대학교 <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editUniversity" name="university" required placeholder="예: 충남대학교">
+            </div>
+            
+            <div class="mb-3">
+              <label for="editBio" class="form-label">자기소개</label>
+              <textarea class="form-control" id="editBio" name="bio" rows="3" placeholder="자신에 대해 간단히 소개해주세요"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-primary" id="saveProfileBtn">저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <p>제작자: 충남대학교 컴퓨터융합학부 전유정</p>
