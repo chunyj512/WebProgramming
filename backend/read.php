@@ -1,17 +1,39 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-$file_path = '../data/contests.txt';
+// contests.txt 경로 확인 (PHP 파일 기준 상대 경로)
+$file_path = __DIR__ . '/../data/contests.txt';
+
+// 경로가 없으면 절대 경로로도 시도
+if (!file_exists($file_path)) {
+    $file_path = '../data/contests.txt';
+}
 
 if (!file_exists($file_path)) {
-    echo json_encode(['error' => '데이터 파일을 찾을 수 없습니다.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode([
+        'error' => '데이터 파일을 찾을 수 없습니다.',
+        'path_tried' => $file_path,
+        'current_dir' => __DIR__
+    ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     exit;
 }
 
 $lines = file($file_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 $contests = [];
 
+if (empty($lines)) {
+    echo json_encode([
+        'error' => '데이터 파일이 비어있습니다.',
+        'path' => $file_path
+    ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    exit;
+}
+
 foreach ($lines as $index => $line) {
+    // 빈 줄 건너뛰기
+    $line = trim($line);
+    if (empty($line)) continue;
+    
     $data = explode(' | ', $line);
     
     if (count($data) >= 8) {
@@ -27,6 +49,14 @@ foreach ($lines as $index => $line) {
             'contact' => trim($data[7])
         ];
     }
+}
+
+if (empty($contests)) {
+    echo json_encode([
+        'error' => '파싱된 데이터가 없습니다.',
+        'lines_count' => count($lines)
+    ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    exit;
 }
 
 echo json_encode($contests, JSON_UNESCAPED_UNICODE);
