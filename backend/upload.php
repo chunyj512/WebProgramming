@@ -28,12 +28,12 @@ $role = isset($_POST['role']) ? trim($_POST['role']) : '';
 $level = isset($_POST['level']) ? trim($_POST['level']) : '';
 $status = isset($_POST['status']) ? trim($_POST['status']) : '';
 $host = isset($_POST['host']) ? trim($_POST['host']) : '';
-$rank = isset($_POST['rank']) ? trim($_POST['rank']) : '';
+$recruitCount = isset($_POST['recruitCount']) ? trim($_POST['recruitCount']) : '';
 $contact = isset($_POST['contact']) ? trim($_POST['contact']) : '';
 $activityPeriod = isset($_POST['activityPeriod']) ? trim($_POST['activityPeriod']) : '';
 
 // 필수 항목 검증
-if (empty($title) || empty($date) || empty($role) || empty($level) || empty($status) || empty($host) || empty($rank) || empty($activityPeriod)) {
+if (empty($title) || empty($date) || empty($role) || empty($level) || empty($status) || empty($host) || empty($recruitCount) || empty($activityPeriod)) {
     echo json_encode([
         'success' => false,
         'message' => '필수 항목이 누락되었습니다. (활동 기간 포함)'
@@ -75,7 +75,7 @@ if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR
     }
 }
 
-// 데이터 형식: 제목 | 모집기간 | 역할 | 난이도 | 상태 | 주최 | 상급 | 연락처 | 이미지경로 | 활동기간
+// 데이터 형식: 제목 | 모집기간 | 역할 | 난이도 | 상태 | 주최 | 총모집인원 | 연락처 | 이미지경로 | 활동기간
 // 이미지가 없으면 빈 문자열로 저장
 $line = sprintf(
     "%s | %s | %s | %s | %s | %s | %s | %s | %s | %s\n",
@@ -85,7 +85,7 @@ $line = sprintf(
     $level,
     $status,
     $host,
-    $rank,
+    $recruitCount,
     $contact,
     $imagePath,
     $activityPeriod

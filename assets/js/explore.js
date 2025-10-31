@@ -61,7 +61,6 @@ function filterAndRender() {
   const searchTerm = document.getElementById('searchInput').value.toLowerCase();
   const roleFilter = document.getElementById('roleFilter').value;
   const levelFilter = document.getElementById('levelFilter').value;
-  const rankFilter = document.getElementById('rankFilter').value;
   const statusActive = document.getElementById('statusActive').checked;
 
   const filtered = allContests.filter(contest => {
@@ -76,13 +75,10 @@ function filterAndRender() {
     // 난이도 필터
     const matchesLevel = !levelFilter || contest.level === levelFilter;
     
-    // 상급 필터
-    const matchesRank = !rankFilter || contest.rank === rankFilter;
-    
     // 모집 상태 필터
     const matchesStatus = !statusActive || contest.status === '모집중';
 
-    return matchesSearch && matchesRole && matchesLevel && matchesRank && matchesStatus;
+    return matchesSearch && matchesRole && matchesLevel && matchesStatus;
   });
 
   renderContests(filtered);
@@ -116,7 +112,7 @@ function renderContests(contests) {
             </div>
             <p class="mb-2">
               <span class="level-badge level-${getLevelClass(contest.level)}">${contest.level}</span>
-              <span class="rank-badge rank-${getRankClass(contest.rank)}">${contest.rank}</span>
+              ${contest.recruitCount ? `<span class="text-muted small">모집 인원: ${contest.recruitCount}명</span>` : ''}
             </p>
             <p class="text-muted small mb-2">${contest.role}</p>
             <p class="text-muted small mb-0">${contest.date}</p>
@@ -172,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('searchInput').addEventListener('input', filterAndRender);
   document.getElementById('roleFilter').addEventListener('change', filterAndRender);
   document.getElementById('levelFilter').addEventListener('change', filterAndRender);
-  document.getElementById('rankFilter').addEventListener('change', filterAndRender);
   document.getElementById('statusActive').addEventListener('change', filterAndRender);
 
   // 초기화 버튼
@@ -180,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('searchInput').value = '';
     document.getElementById('roleFilter').value = '';
     document.getElementById('levelFilter').value = '';
-    document.getElementById('rankFilter').value = '';
     document.getElementById('statusActive').checked = false;
     filterAndRender();
   });

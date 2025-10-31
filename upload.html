@@ -31,8 +31,8 @@
 
   <main class="container my-4">
     <section class="contest-section">
-      <h2>🏆 새로운 대회 등록</h2>
-      <p>새로운 대회 정보를 등록하고 다른 학생들과 공유하세요.</p>
+      <h2>🏆 대회 등록</h2>
+      <p>새로운 대회 정보를 등록하고 팀원을 모집하세요.</p>
       
       <div class="search-container">
         <form id="uploadForm" class="contest-form">
@@ -71,23 +71,88 @@
           </div>
 
           <div class="mb-3">
-            <label for="role" class="form-label">모집 분야 <span class="text-danger">*</span></label>
-            <select class="form-control" id="role" name="role[]" multiple required>
-              <option value="프론트엔드">프론트엔드</option>
-              <option value="디자이너">디자이너</option>
-              <option value="기획자">기획자</option>
-              <option value="마케터">마케터</option>
-              <option value="데이터 분석가">데이터 분석가</option>
-              <option value="통계학자">통계학자</option>
-              <option value="엔지니어">엔지니어</option>
-              <option value="프로그래머">프로그래머</option>
-              <option value="개발자">개발자</option>
-              <option value="UX 디자이너">UX 디자이너</option>
-              <option value="UI 디자이너">UI 디자이너</option>
-              <option value="블록체인 개발자">블록체인 개발자</option>
-              <option value="비즈니스 분석가">비즈니스 분석가</option>
-            </select>
-            <small class="form-text text-muted">여러 역할을 선택하려면 Ctrl(Windows) / ⌘(Mac)을 누르세요</small>
+            <label class="form-label">모집 분야 <span class="text-danger">*</span></label>
+            <div class="row g-2" id="roleCheckboxes">
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-frontend" name="role[]" value="프론트엔드">
+                  <label class="form-check-label" for="role-frontend">프론트엔드</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-designer" name="role[]" value="디자이너">
+                  <label class="form-check-label" for="role-designer">디자이너</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-planner" name="role[]" value="기획자">
+                  <label class="form-check-label" for="role-planner">기획자</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-marketer" name="role[]" value="마케터">
+                  <label class="form-check-label" for="role-marketer">마케터</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-data-analyst" name="role[]" value="데이터 분석가">
+                  <label class="form-check-label" for="role-data-analyst">데이터 분석가</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-statistician" name="role[]" value="통계학자">
+                  <label class="form-check-label" for="role-statistician">통계학자</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-engineer" name="role[]" value="엔지니어">
+                  <label class="form-check-label" for="role-engineer">엔지니어</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-programmer" name="role[]" value="프로그래머">
+                  <label class="form-check-label" for="role-programmer">프로그래머</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-developer" name="role[]" value="개발자">
+                  <label class="form-check-label" for="role-developer">개발자</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-ux-designer" name="role[]" value="UX 디자이너">
+                  <label class="form-check-label" for="role-ux-designer">UX 디자이너</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-ui-designer" name="role[]" value="UI 디자이너">
+                  <label class="form-check-label" for="role-ui-designer">UI 디자이너</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-blockchain" name="role[]" value="블록체인 개발자">
+                  <label class="form-check-label" for="role-blockchain">블록체인 개발자</label>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="role-business-analyst" name="role[]" value="비즈니스 분석가">
+                  <label class="form-check-label" for="role-business-analyst">비즈니스 분석가</label>
+                </div>
+              </div>
+            </div>
+            <small class="form-text text-muted">모집할 분야를 선택하세요 (복수 선택 가능)</small>
           </div>
 
           <div class="mb-3">
@@ -101,15 +166,9 @@
           </div>
 
           <div class="mb-3">
-            <label for="rank" class="form-label">상급 <span class="text-danger">*</span></label>
-            <select class="form-control" id="rank" name="rank" required>
-              <option value="">선택하세요</option>
-              <option value="교내급">교내급</option>
-              <option value="지역급">지역급</option>
-              <option value="전국급">전국급</option>
-              <option value="국제급">국제급</option>
-              <option value="공공기관급">공공기관급</option>
-            </select>
+            <label for="recruitCount" class="form-label">총 모집 인원 <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="recruitCount" name="recruitCount" required min="1" placeholder="예: 5">
+            <small class="form-text text-muted">모집할 총 인원 수를 입력하세요</small>
           </div>
 
           <div class="mb-3">

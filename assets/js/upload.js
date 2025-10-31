@@ -62,9 +62,9 @@ form.addEventListener('submit', async (e) => {
   try {
     const formData = new FormData(form);
     
-    // 다중 role 직렬화 (콤마로 구분)
-    const roleSelect = document.getElementById('role');
-    const selectedRoles = Array.from(roleSelect.selectedOptions).map(option => option.value);
+    // 체크박스에서 선택된 role 가져오기
+    const roleCheckboxes = document.querySelectorAll('input[name="role[]"]:checked');
+    const selectedRoles = Array.from(roleCheckboxes).map(checkbox => checkbox.value);
     
     if (selectedRoles.length === 0) {
       alert('⚠️ 모집 분야를 최소 1개 이상 선택해주세요.');
@@ -90,7 +90,7 @@ form.addEventListener('submit', async (e) => {
       level: formData.get('level'),
       status: formData.get('status'),
       host: formData.get('host'),
-      rank: formData.get('rank'),
+      recruitCount: formData.get('recruitCount'),
       activityPeriod: formData.get('activityPeriod'),
       contact: formData.get('contact'),
       hasImage: formData.get('image') ? 'Yes' : 'No'

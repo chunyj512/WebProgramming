@@ -57,6 +57,9 @@ async function loadContestDetail() {
 
     console.log('대회 정보 로드 완료:', contest);
     renderContestDetail(contest);
+    
+    // 신청 버튼 로직
+    setupApplyButton(contest);
   } catch (error) {
     console.error('데이터 불러오기 실패:', error);
     document.getElementById('contest-info').innerHTML = 
@@ -92,7 +95,7 @@ function renderContestDetail(contest) {
         
         <div class="mb-3">
           <span class="level-badge level-${getLevelClass(contest.level)} me-2">${contest.level}</span>
-          <span class="rank-badge rank-${getRankClass(contest.rank)}">${contest.rank}</span>
+          ${contest.recruitCount ? `<span class="text-muted ms-2">모집 인원: ${contest.recruitCount}명</span>` : ''}
         </div>
 
         <table class="table table-bordered mt-4">
@@ -121,12 +124,12 @@ function renderContestDetail(contest) {
                 <span class="level-badge level-${getLevelClass(contest.level)}">${contest.level}</span>
               </td>
             </tr>
+            ${contest.recruitCount ? `
             <tr>
-              <th scope="row">상급</th>
-              <td>
-                <span class="rank-badge rank-${getRankClass(contest.rank)}">${contest.rank}</span>
-              </td>
+              <th scope="row">총 모집 인원</th>
+              <td>${contest.recruitCount}명</td>
             </tr>
+            ` : ''}
             <tr>
               <th scope="row">주최</th>
               <td>${contest.host}</td>
@@ -187,6 +190,82 @@ function getRankClass(rank) {
     '공공기관급': 'public'
   };
   return map[rank] || 'local';
+}
+
+// 신청 버튼 설정
+function setupApplyButton(contest) {
+  const applyContainer = document.getElementById('applyContainer');
+  const applyBtn = document.getElementById('applyBtn');
+  const loginPrompt = document.getElementById('loginPrompt');
+  
+  if (!applyContainer || !applyBtn) return;
+  
+  // 모집중인 대회만 신청 버튼 표시
+  if (contest.status !== '모집중') {
+    applyContainer.style.display = 'none';
+    return;
+  }
+  
+  applyContainer.style.display = 'block';
+  
+  // 로그인 상태 확인
+  const loggedUser = localStorage.getItem('loggedUser');
+  
+  if (!loggedUser) {
+    // 로그인 안 된 경우
+    applyBtn.style.display = 'none';
+    loginPrompt.style.display = 'block';
+  } else {
+    // 로그인 된 경우
+    applyBtn.style.display = 'inline-block';
+    loginPrompt.style.display = 'none';
+    
+    // 이미 신청했는지 확인
+    const myApplications = JSON.parse(localStorage.getItem('myApplications') || '[]');
+    const alreadyApplied = myApplications.some(app => 
+      app.contestId === parseInt(contest.id) && app.user === loggedUser
+    );
+    
+    if (alreadyApplied) {
+      applyBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>이미 신청한 대회입니다';
+      applyBtn.classList.remove('btn-success');
+      applyBtn.classList.add('btn-secondary');
+      applyBtn.disabled = true;
+    } else {
+      // 신청 버튼 클릭 이벤트
+      applyBtn.addEventListener('click', () => {
+        const applications = JSON.parse(localStorage.getItem('myApplications') || '[]');
+        
+        const newApplication = {
+          user: loggedUser,
+          contestId: parseInt(contest.id),
+          title: contest.title,
+          date: contest.date,
+          role: contest.role,
+          level: contest.level,
+          host: contest.host,
+          recruitCount: contest.recruitCount || '',
+          status: contest.status,
+          appliedAt: new Date().toISOString()
+        };
+        
+        applications.push(newApplication);
+        localStorage.setItem('myApplications', JSON.stringify(applications));
+        
+        alert('✅ 대회 신청이 완료되었습니다!');
+        
+        // 마이페이지로 이동 또는 버튼 상태 변경
+        if (confirm('마이페이지에서 신청 내역을 확인하시겠습니까?')) {
+          window.location.href = 'mypage.html';
+        } else {
+          applyBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>이미 신청한 대회입니다';
+          applyBtn.classList.remove('btn-success');
+          applyBtn.classList.add('btn-secondary');
+          applyBtn.disabled = true;
+        }
+      });
+    }
+  }
 }
 
 // 페이지 로드 시 실행
