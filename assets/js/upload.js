@@ -7,6 +7,25 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
   const submitBtn = form.querySelector('button[type="submit"]');
   const originalText = submitBtn.innerHTML;
   
+  // 모집 시작일과 마감일을 합쳐서 date 필드에 저장
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+  const hiddenDate = document.getElementById('date');
+  
+  // 날짜 유효성 검사
+  if (!startDate || !endDate) {
+    alert('⚠️ 모집 시작일과 마감일을 모두 입력해주세요.');
+    return;
+  }
+  
+  if (new Date(startDate) > new Date(endDate)) {
+    alert('⚠️ 모집 시작일은 마감일보다 빨라야 합니다.');
+    return;
+  }
+  
+  // 날짜 형식: 2025-09-20 ~ 2025-10-10
+  hiddenDate.value = `${startDate} ~ ${endDate}`;
+  
   // 버튼 비활성화 및 로딩 표시
   submitBtn.disabled = true;
   submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>등록 중...';

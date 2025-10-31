@@ -22,12 +22,13 @@ $status = isset($_POST['status']) ? trim($_POST['status']) : '';
 $host = isset($_POST['host']) ? trim($_POST['host']) : '';
 $rank = isset($_POST['rank']) ? trim($_POST['rank']) : '';
 $contact = isset($_POST['contact']) ? trim($_POST['contact']) : '';
+$activityPeriod = isset($_POST['activityPeriod']) ? trim($_POST['activityPeriod']) : '';
 
 // 필수 항목 검증
-if (empty($title) || empty($date) || empty($role) || empty($level) || empty($status) || empty($host) || empty($rank)) {
+if (empty($title) || empty($date) || empty($role) || empty($level) || empty($status) || empty($host) || empty($rank) || empty($activityPeriod)) {
     echo json_encode([
         'success' => false,
-        'message' => '필수 항목이 누락되었습니다.'
+        'message' => '필수 항목이 누락되었습니다. (활동 기간 포함)'
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -37,9 +38,9 @@ if (empty($contact)) {
     $contact = 'contact@seeandyou.ac.kr';
 }
 
-// 데이터 형식: 제목 | 기간 | 역할 | 난이도 | 상태 | 주최 | 상격 | 연락처
+// 데이터 형식: 제목 | 모집기간 | 역할 | 난이도 | 상태 | 주최 | 상격 | 연락처 | 활동기간
 $line = sprintf(
-    "%s | %s | %s | %s | %s | %s | %s | %s\n",
+    "%s | %s | %s | %s | %s | %s | %s | %s | %s\n",
     $title,
     $date,
     $role,
@@ -47,7 +48,8 @@ $line = sprintf(
     $status,
     $host,
     $rank,
-    $contact
+    $contact,
+    $activityPeriod
 );
 
 // 파일에 추가 (LOCK_EX로 동시 접근 방지)

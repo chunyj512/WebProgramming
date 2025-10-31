@@ -36,8 +36,9 @@ foreach ($lines as $index => $line) {
     
     $data = explode(' | ', $line);
     
+    // 기존 8개 필드 또는 새로운 9개 필드(활동 기간 포함) 모두 지원
     if (count($data) >= 8) {
-        $contests[] = [
+        $contest = [
             'id' => $index,
             'title' => trim($data[0]),
             'date' => trim($data[1]),
@@ -48,6 +49,15 @@ foreach ($lines as $index => $line) {
             'rank' => trim($data[6]),
             'contact' => trim($data[7])
         ];
+        
+        // 활동 기간 필드가 있으면 추가 (9개 필드인 경우)
+        if (count($data) >= 9) {
+            $contest['activityPeriod'] = trim($data[8]);
+        } else {
+            $contest['activityPeriod'] = ''; // 기존 데이터 호환성
+        }
+        
+        $contests[] = $contest;
     }
 }
 

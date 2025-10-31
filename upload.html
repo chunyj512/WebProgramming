@@ -42,9 +42,25 @@
           </div>
 
           <div class="mb-3">
-            <label for="date" class="form-label">기간 <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="date" name="date" required placeholder="예: 2025-09-20 ~ 2025-10-10">
-            <small class="form-text text-muted">시작일 ~ 종료일 형식으로 입력하세요</small>
+            <label class="form-label">모집 기간 <span class="text-danger">*</span></label>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <label for="startDate" class="form-label small text-muted">모집 시작일</label>
+                <input type="date" class="form-control" id="startDate" required>
+              </div>
+              <div class="col-md-6">
+                <label for="endDate" class="form-label small text-muted">모집 마감일</label>
+                <input type="date" class="form-control" id="endDate" required>
+              </div>
+            </div>
+            <small class="form-text text-muted">참가자 모집 및 신청 마감 기간입니다</small>
+            <input type="hidden" id="date" name="date">
+          </div>
+
+          <div class="mb-3">
+            <label for="activityPeriod" class="form-label">활동 기간 <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="activityPeriod" name="activityPeriod" required placeholder="예: 3개월 프로젝트 / 8주 집중형 / 약 2개월 과정">
+            <small class="form-text text-muted">실제 대회 활동 또는 프로젝트 수행 기간을 입력하세요</small>
           </div>
 
           <div class="mb-3">

@@ -102,9 +102,15 @@ function renderContestDetail(contest) {
               <td>${contest.title}</td>
             </tr>
             <tr>
-              <th scope="row">기간</th>
+              <th scope="row">모집 기간</th>
               <td>${contest.date}</td>
             </tr>
+            ${contest.activityPeriod ? `
+            <tr>
+              <th scope="row">활동 기간</th>
+              <td>${contest.activityPeriod}</td>
+            </tr>
+            ` : ''}
             <tr>
               <th scope="row">모집 분야</th>
               <td>${contest.role}</td>
