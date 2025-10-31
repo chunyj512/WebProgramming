@@ -52,15 +52,6 @@ function updateUserProfile(user) {
     }
   }
   
-  // 환영 배너 표시
-  const userNameDisplay = document.getElementById('userNameDisplay');
-  if (userNameDisplay) {
-    userNameDisplay.textContent = user.name || '사용자';
-  }
-  const welcomeBanner = document.getElementById('welcomeBanner');
-  if (welcomeBanner) {
-    welcomeBanner.style.display = 'block';
-  }
 }
 
 function loadAppliedContests() {
